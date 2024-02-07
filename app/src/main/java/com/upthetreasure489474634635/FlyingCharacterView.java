@@ -9,6 +9,7 @@ import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Typeface;
+import android.os.Handler;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Toast;
@@ -49,7 +50,14 @@ public class FlyingCharacterView extends View {
     private float angle = 0;
     private int radius = 100;
 
+    //
+    private boolean isClimbing = false;
+    private int[] tileSpeeds;
+    //
     private Matrix matrix;
+    //
+    private boolean moveTiles = false;
+
     public FlyingCharacterView(Context context) {
         super(context);
 
@@ -69,10 +77,13 @@ public class FlyingCharacterView extends View {
         giftsDrawable = BitmapFactory.decodeResource(getResources(), R.drawable.gift1);
 
         // Initialize tile positions randomly
-        tileX = new int[numTiles];
+        tileSpeeds = new int[numTiles];
+        tileX = new int[numTiles]; // Initialize tileX array
         tileY = new int[numTiles];
+        // Set speeds for individual tiles (you can customize this as needed)
         for (int i = 0; i < numTiles; i++) {
-            tileX[i] = (int) Math.floor(Math.random() * (600 - tile.getWidth()));
+            tileSpeeds[i] = 10 + i * 2; // Example: increasing speed for lower tiles
+            tileX[i] = (int) Math.floor(Math.random() * (500 - tile.getWidth()));
             tileY[i] = (int) Math.floor(Math.random() * (900 - tile.getHeight()));
         }
 
@@ -98,15 +109,40 @@ public class FlyingCharacterView extends View {
 
         canvas.drawBitmap(background, 0, 0, null); //bg
 
-        //tiles
-        for (int i = 0; i < numTiles; i++) {
-            canvas.drawBitmap(tile, tileX[i], tileY[i], null); //apple/red
+        if (moveTiles) {
+            for (int i = 0; i < numTiles; i++) {
+                // If a tile has reached the bottom edge of the canvas,
+                // move it out of view and adjust other tiles accordingly
+                if (tileY[i] > canvasHeight) {
+                    numTiles--;
+                    for (int j = i; j < numTiles; j++) {
+                        tileY[j] = tileY[j + 1] - tile.getHeight();
+                        tileX[j] = tileX[j + 1];
+                    }
+                } else {
+                    // Update tileY only when moveTiles is true
+                    tileY[i] += tileSpeeds[i];
+                }
+
+                canvas.drawBitmap(tile, tileX[i], tileY[i], null);
+            }
         }
+        // Additional checks to ensure tiles are drawn correctly at game start
+        for (int i = 0; i < numTiles; i++) {
+            if (tileY[i] <= canvasHeight) { // Check if tile is within canvas bounds
+                canvas.drawBitmap(tile, tileX[i], tileY[i], null);
+            }
+        }
+        //
+        // Character movement
+
 
         //
         int minmanY = man[0].getHeight();
         int maxmanY = canvasHeight - man[0].getHeight();
         manY = manY + manSpeed;
+        manY = Math.max(minmanY, Math.min(maxmanY, manY)); // Constrain to canvas bounds
+        manSpeed = Math.min(manSpeed + 2, 20); // Limit speed
 
         if (manY < minmanY) {
             manY = minmanY;
@@ -139,7 +175,11 @@ public class FlyingCharacterView extends View {
         } else {
             canvas.drawBitmap(man[0], matrix, null);
         }
-
+        if (isClimbing) {
+            canvas.drawBitmap(man[1], matrix, null);
+        } else {
+            canvas.drawBitmap(man[0], matrix, null);
+        }
         //coins
         coinY = coinY + coinSpeed;
         if (hitBallChecker(coinX, coinY)) {
@@ -167,30 +207,6 @@ public class FlyingCharacterView extends View {
         }
 
         canvas.drawBitmap(giftsDrawable, giftX, giftY, null);
-//        //tiles
-//        tileY = tileY + tileSpeed;
-//        if (hitBallChecker(tileX, tileY)) {
-//            tileY = -100;
-//            Toast.makeText(getContext(), "Game Over", Toast.LENGTH_SHORT).show();
-//
-////            lifeCounterOfFish--;
-////            if (lifeCounterOfFish == 0) {
-////                Toast.makeText(getContext(), "Game Over", Toast.LENGTH_SHORT).show();
-////
-////                //
-////                Intent i = new Intent(getContext(), GameOverActivity.class);
-////                i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-////                getContext().startActivity(i);
-////            }
-//        }
-//
-//        if (tileY > canvasHeight) {
-//            tileY = 0;
-//            tileX = (int) Math.floor(Math.random() * (maxmanY - minmanY) + minmanY);
-//        }
-//        canvas.drawBitmap(tile, tileX, tileY, null); //apple/red
-
-
         //
         canvas.drawText("Score : " + score, 20, 60, scorePaint);//scorepaint
 
@@ -203,36 +219,69 @@ public class FlyingCharacterView extends View {
         return false;
     }
 
+
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
             touch = true;
 
-            manSpeed = -22;
+            if (!isClimbing) {
+                // Change the character's drawable when tapped
+                // ... (if you want to change the drawable)
+
+                // Move the character up to the next tile
+                int currentTile = findCurrentTile(manX + man[0].getWidth() / 2, manY + man[0].getHeight() / 2);
+                if (manY + man[0].getHeight() >= tileY[currentTile]) {
+                    // Add a new tile at the top
+                    tileY[numTiles - 1] -= tile.getHeight();
+                    tileY[0] = -tile.getHeight();
+                    tileX[0] = (int) Math.floor(Math.random() * (canvasWidth - tile.getWidth()));
+                    numTiles++;
+
+////
+
+                    // Move the character to the top of the new tile
+                    manY = tileY[currentTile] - man[0].getHeight();
+                    //
+                    // Remove the bottom tile
+                    for (int i = numTiles - 2; i > 0; i--) { // Change the condition to i > 0
+                        tileY[i] = tileY[i - 1]; // Also adjust the indices for assignment
+                        tileX[i] = tileX[i - 1];
+                    }
+                    numTiles--;
+
+                    // Increase score
+                    score++;
+
+                    isClimbing = true;
+                    manSpeed = 0; // Set climbing speed
+                    moveTiles = true;
+                    // Delay setting isClimbing to false until after the man has reached the top
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            moveTiles = false;
+                            isClimbing = false;
+                            manSpeed = 0;
+                        }
+                    }, 500);
+                }
+            }
         }
         return true;
     }
 
 
-    // Inner class for Tile
-//    private class Tile {
-//        private int x, y;
-//        private Bitmap tile;
-//
-//        public Tile(int x, int y) {
-//            this.x = x;
-//            this.y = y;
-//            this.tile = BitmapFactory.decodeResource(getResources(), R.drawable.tile);
-//        }
-//
-//        public void draw(Canvas canvas) {
-//            canvas.drawBitmap(tile, x, y, null);
-//        }
-//
-//        public void update(int targetX, int targetY) {
-//            // Update the position of the tile towards the target (character)
-//            x += (targetX - x) / 20;
-//            y += (targetY - y) / 20;
-//        }
-//    }
+    private int findCurrentTile(int manX, int manY) {
+        for (int i = numTiles - 2; i >= 0; i--) {
+            if (manX >= tileX[i] - tile.getWidth() / 2 // Offset by half tile width
+                    && manX <= tileX[i] + tile.getWidth() / 2 // Offset by half tile width
+                    && manY >= tileY[i] && manY <= (tileY[i] + tile.getHeight())) {
+                return i + 1; // Return index of tile above current tile
+            }
+        }
+        return 0;
+    }
+
+
 }
