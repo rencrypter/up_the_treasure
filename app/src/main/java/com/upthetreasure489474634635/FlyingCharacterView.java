@@ -14,13 +14,15 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Toast;
 
+import io.paperdb.Paper;
+
 public class FlyingCharacterView extends View {
 
 
     private Bitmap man[] = new Bitmap[2];
     //
-    private int manX;
-    private int manY;
+    private long manX;
+    private long manY;
     private int manSpeed;
     private int canvasWidth, canvasHeight;
     private Bitmap background;
@@ -33,16 +35,16 @@ public class FlyingCharacterView extends View {
 
     //yellow balls
     private int coinX, coinY;
-    private int coinSpeed = 12;
+    private int coinSpeed = 5;
     //    private Paint yellowPaint = new Paint();
     Bitmap coinDrawable;
 
     //green balls
-    private int giftX, giftY, greenSpeed = 10;
+    private int giftX, giftY, greenSpeed = 2;
     //    private Paint greenPaint = new Paint();
     Bitmap giftsDrawable;
     private int[] tileX, tileY;
-    private int tileSpeed = 0;
+
     Bitmap tile;
 
     private int numTiles = 5;
@@ -55,26 +57,34 @@ public class FlyingCharacterView extends View {
     private int[] tileSpeeds;
     //
     private Matrix matrix;
+    float characterAngle;
+    int characterXPos, characterYPos;
+    int tileCenterX, tileCenterY;
     //
     private boolean moveTiles = false;
+
+    Bitmap lava;
 
     public FlyingCharacterView(Context context) {
         super(context);
 
+        background = BitmapFactory.decodeResource(getResources(), R.drawable.bg);
+        lava = BitmapFactory.decodeResource(getResources(), R.drawable.ic_lawa_draw);
         matrix = new Matrix();
         //
-        man[0] = BitmapFactory.decodeResource(getResources(), R.drawable.men1_1);
-        man[1] = BitmapFactory.decodeResource(getResources(), R.drawable.men1_2);
+        Paper.init(context);
+        //
+        characterLoading();
 
         tile = BitmapFactory.decodeResource(getResources(), R.drawable.tile);
         //
-        background = BitmapFactory.decodeResource(getResources(), R.drawable.bg);
+
         //
         coinDrawable = BitmapFactory.decodeResource(getResources(), R.drawable.coin);
 
+        giftsDrawable = BitmapFactory.decodeResource(getResources(), R.drawable.gift1);
         //
 
-        giftsDrawable = BitmapFactory.decodeResource(getResources(), R.drawable.gift1);
 
         // Initialize tile positions randomly
         tileSpeeds = new int[numTiles];
@@ -97,6 +107,85 @@ public class FlyingCharacterView extends View {
         //
         manY = 550;
         score = 0;
+    }
+
+    private void giftAchieDrawables() {
+        if (Ref.countForAchiev == 5) {
+            giftsDrawable = BitmapFactory.decodeResource(getResources(), R.drawable.gift1);
+
+        } else if (Ref.countForAchiev == 10) {
+            giftsDrawable = BitmapFactory.decodeResource(getResources(), R.drawable.gift2);
+
+        } else if (Ref.countForAchiev == 15) {
+            giftsDrawable = BitmapFactory.decodeResource(getResources(), R.drawable.gift3);
+
+        } else if (Ref.countForAchiev == 20) {
+            giftsDrawable = BitmapFactory.decodeResource(getResources(), R.drawable.gift4);
+
+        } else if (Ref.countForAchiev == 25) {
+            giftsDrawable = BitmapFactory.decodeResource(getResources(), R.drawable.gift5);
+
+        } else if (Ref.countForAchiev == 30) {
+            giftsDrawable = BitmapFactory.decodeResource(getResources(), R.drawable.gift6);
+
+        } else if (Ref.countForAchiev == 35) {
+            giftsDrawable = BitmapFactory.decodeResource(getResources(), R.drawable.gift7);
+
+        } else if (Ref.countForAchiev == 40) {
+            giftsDrawable = BitmapFactory.decodeResource(getResources(), R.drawable.gift8);
+
+        } else if (Ref.countForAchiev == 45) {
+            giftsDrawable = BitmapFactory.decodeResource(getResources(), R.drawable.gift9);
+
+        } else if (Ref.countForAchiev == 50) {
+            giftsDrawable = BitmapFactory.decodeResource(getResources(), R.drawable.gift10);
+
+        } else if (Ref.countForAchiev == 55) {
+            giftsDrawable = BitmapFactory.decodeResource(getResources(), R.drawable.gift11);
+
+        } else if (Ref.countForAchiev == 60) {
+            giftsDrawable = BitmapFactory.decodeResource(getResources(), R.drawable.gift12);
+
+        }
+    }
+
+    private void characterLoading() {
+
+        if (Ref.character == 1) {
+            man[0] = BitmapFactory.decodeResource(getResources(), R.drawable.men1_1);
+            man[1] = BitmapFactory.decodeResource(getResources(), R.drawable.men1_2);
+        } else if (Ref.character == 2) {
+            man[0] = BitmapFactory.decodeResource(getResources(), R.drawable.men2_1);
+            man[1] = BitmapFactory.decodeResource(getResources(), R.drawable.men2_2);
+        } else if (Ref.character == 3) {
+            man[0] = BitmapFactory.decodeResource(getResources(), R.drawable.men3_1);
+            man[1] = BitmapFactory.decodeResource(getResources(), R.drawable.men3_2);
+        } else if (Ref.character == 4) {
+            man[0] = BitmapFactory.decodeResource(getResources(), R.drawable.men4_1);
+            man[1] = BitmapFactory.decodeResource(getResources(), R.drawable.men4_2);
+        } else if (Ref.character == 5) {
+            man[0] = BitmapFactory.decodeResource(getResources(), R.drawable.men5_1);
+            man[1] = BitmapFactory.decodeResource(getResources(), R.drawable.men5_2);
+        } else if (Ref.character == 6) {
+            man[0] = BitmapFactory.decodeResource(getResources(), R.drawable.men6_1);
+            man[1] = BitmapFactory.decodeResource(getResources(), R.drawable.men6_2);
+        } else if (Ref.character == 7) {
+            man[0] = BitmapFactory.decodeResource(getResources(), R.drawable.men7_1);
+            man[1] = BitmapFactory.decodeResource(getResources(), R.drawable.men7_2);
+        } else if (Ref.character == 8) {
+            man[0] = BitmapFactory.decodeResource(getResources(), R.drawable.men8_1);
+            man[1] = BitmapFactory.decodeResource(getResources(), R.drawable.men8_2);
+        } else if (Ref.character == 9) {
+            man[0] = BitmapFactory.decodeResource(getResources(), R.drawable.men9_1);
+            man[1] = BitmapFactory.decodeResource(getResources(), R.drawable.men9_2);
+        } else if (Ref.character == 10) {
+            man[0] = BitmapFactory.decodeResource(getResources(), R.drawable.men10_1);
+            man[1] = BitmapFactory.decodeResource(getResources(), R.drawable.men10_2);
+        } else if (Ref.character == 11) {
+            man[0] = BitmapFactory.decodeResource(getResources(), R.drawable.men11_1);
+            man[1] = BitmapFactory.decodeResource(getResources(), R.drawable.men11_2);
+        }
+
     }
 
     @Override
@@ -138,11 +227,12 @@ public class FlyingCharacterView extends View {
 
 
         //
+        manY = manY + manSpeed;
+        manSpeed = Math.min(manSpeed + 2, 20); // Limit speed
+
         int minmanY = man[0].getHeight();
         int maxmanY = canvasHeight - man[0].getHeight();
-        manY = manY + manSpeed;
         manY = Math.max(minmanY, Math.min(maxmanY, manY)); // Constrain to canvas bounds
-        manSpeed = Math.min(manSpeed + 2, 20); // Limit speed
 
         if (manY < minmanY) {
             manY = minmanY;
@@ -152,13 +242,13 @@ public class FlyingCharacterView extends View {
         }
         manSpeed = manSpeed + 2;
         // Calculate the center of the tile
-        int tileCenterX = tileX[0] + tile.getWidth() / 2;
-        int tileCenterY = tileY[0] + tile.getHeight() / 2;
+        tileCenterX = tileX[0] + tile.getWidth() / 2;
+        tileCenterY = tileY[0] + tile.getHeight() / 2;
 
         // Calculate the character's position revolving around the center of the tile
-        float characterAngle = (float) Math.toRadians(angle);
-        int characterXPos = tileCenterX + (int) (radius * Math.cos(characterAngle)) - man[0].getWidth() / 2;
-        int characterYPos = tileCenterY + (int) (radius * Math.sin(characterAngle)) - man[0].getHeight() / 2;
+        characterAngle = (float) Math.toRadians(angle);
+        characterXPos = tileCenterX + (int) (radius * Math.cos(characterAngle)) - man[0].getWidth() / 2;
+        characterYPos = tileCenterY + (int) (radius * Math.sin(characterAngle)) - man[0].getHeight() / 2;
 
         // Update the angle for the next frame
         angle += 2;
@@ -169,14 +259,9 @@ public class FlyingCharacterView extends View {
         matrix.postRotate((float) Math.toDegrees(characterAngle), characterXPos + man[0].getWidth() / 2, characterYPos + man[0].getHeight() / 2);
 
         // Draw the character at the calculated position with rotation
-        if (touch) {
-            canvas.drawBitmap(man[1], matrix, null);
-            touch = false;
-        } else {
-            canvas.drawBitmap(man[0], matrix, null);
-        }
         if (isClimbing) {
-            canvas.drawBitmap(man[1], matrix, null);
+            canvas.drawBitmap(man[1], manX, manY, null);
+//            isClimbing = false;
         } else {
             canvas.drawBitmap(man[0], matrix, null);
         }
@@ -192,14 +277,80 @@ public class FlyingCharacterView extends View {
         }
         canvas.drawBitmap(coinDrawable, coinX, coinY, null);
 
+        giftAchieDrawables();
+
 
         //gifts
+        giftsAndAchievOnCanvas(canvas, minmanY, minmanY);
+        //
+        canvas.drawText("Score : " + score, 20, 60, scorePaint);//scorepaint
+
+
+        int lavaHeight = lava.getHeight();
+        canvas.drawBitmap(lava, 0, canvasHeight - lavaHeight, null);
+    }
+
+    private void giftsAndAchievOnCanvas(Canvas canvas, int minmanY, int maxmanY) {
+
+        if (Ref.countForAchiev == 5) {
+            drawGiftAndAchie(canvas, minmanY, maxmanY);
+            Ref.achi1 = true;
+            Paper.book().write("achi1", Ref.achi1);
+        } else if (Ref.countForAchiev == 10) {
+            drawGiftAndAchie(canvas, minmanY, maxmanY);
+            Ref.achi2 = true;
+            Paper.book().write("achi2", Ref.achi2);
+        } else if (Ref.countForAchiev == 15) {
+            drawGiftAndAchie(canvas, minmanY, maxmanY);
+            Ref.achi3 = true;
+            Paper.book().write("achi3", Ref.achi3);
+        } else if (Ref.countForAchiev == 20) {
+            drawGiftAndAchie(canvas, minmanY, maxmanY);
+            Ref.achi4 = true;
+            Paper.book().write("achi4", Ref.achi4);
+        } else if (Ref.countForAchiev == 25) {
+            drawGiftAndAchie(canvas, minmanY, maxmanY);
+            Ref.achi5 = true;
+            Paper.book().write("achi5", Ref.achi5);
+        } else if (Ref.countForAchiev == 30) {
+            drawGiftAndAchie(canvas, minmanY, maxmanY);
+            Ref.achi6 = true;
+            Paper.book().write("achi6", Ref.achi6);
+        } else if (Ref.countForAchiev == 35) {
+            drawGiftAndAchie(canvas, minmanY, maxmanY);
+            Ref.achi7 = true;
+            Paper.book().write("achi7", Ref.achi7);
+        } else if (Ref.countForAchiev == 40) {
+            drawGiftAndAchie(canvas, minmanY, maxmanY);
+            Ref.achi8 = true;
+            Paper.book().write("achi8", Ref.achi8);
+        } else if (Ref.countForAchiev == 45) {
+            drawGiftAndAchie(canvas, minmanY, maxmanY);
+            Ref.achi9 = true;
+            Paper.book().write("achi9", Ref.achi9);
+        } else if (Ref.countForAchiev == 50) {
+            drawGiftAndAchie(canvas, minmanY, maxmanY);
+            Ref.achi10 = true;
+            Paper.book().write("achi10", Ref.achi10);
+        } else if (Ref.countForAchiev == 55) {
+            drawGiftAndAchie(canvas, minmanY, maxmanY);
+            Ref.achi11 = true;
+            Paper.book().write("achi11", Ref.achi11);
+        } else if (Ref.countForAchiev == 60) {
+            drawGiftAndAchie(canvas, minmanY, maxmanY);
+            Ref.achi12 = true;
+            Paper.book().write("achi12", Ref.achi12);
+        }
+
+        Paper.book().write("counting", Ref.countForAchiev);
+    }
+
+    private void drawGiftAndAchie(Canvas canvas, int minmanY, int maxmanY) {
         giftY = giftY + greenSpeed;
         if (hitBallChecker(giftX, giftY)) {
             score = score + 10;
             giftY = -100;
         }
-
 
         if (giftY > canvasHeight) {
             giftY = 0;
@@ -207,9 +358,6 @@ public class FlyingCharacterView extends View {
         }
 
         canvas.drawBitmap(giftsDrawable, giftX, giftY, null);
-        //
-        canvas.drawText("Score : " + score, 20, 60, scorePaint);//scorepaint
-
     }
 
     public boolean hitBallChecker(int x, int y) {
@@ -223,50 +371,28 @@ public class FlyingCharacterView extends View {
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
-            touch = true;
+            isClimbing = true;
+            Ref.countForAchiev++;
+//            // Set the man's position to the tap coordinates
+//            manX = (int) event.getX() - man[0].getWidth() / 2;
+//            manY = (int) event.getY() - man[0].getHeight() / 2;
 
-            if (!isClimbing) {
-                // Change the character's drawable when tapped
-                // ... (if you want to change the drawable)
+            double deltaX = tileCenterX - manX - man[0].getWidth() / 2;
+            double deltaY = tileCenterY - manY - man[0].getHeight() / 2;
 
-                // Move the character up to the next tile
-                int currentTile = findCurrentTile(manX + man[0].getWidth() / 2, manY + man[0].getHeight() / 2);
-                if (manY + man[0].getHeight() >= tileY[currentTile]) {
-                    // Add a new tile at the top
-                    tileY[numTiles - 1] -= tile.getHeight();
-                    tileY[0] = -tile.getHeight();
-                    tileX[0] = (int) Math.floor(Math.random() * (canvasWidth - tile.getWidth()));
-                    numTiles++;
+            double distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
 
-////
+            long tangentX = Math.round(deltaX / distance);
+            long tangentY = Math.round(deltaY / distance);
 
-                    // Move the character to the top of the new tile
-                    manY = tileY[currentTile] - man[0].getHeight();
-                    //
-                    // Remove the bottom tile
-                    for (int i = numTiles - 2; i > 0; i--) { // Change the condition to i > 0
-                        tileY[i] = tileY[i - 1]; // Also adjust the indices for assignment
-                        tileX[i] = tileX[i - 1];
-                    }
-                    numTiles--;
+            // Stop circular motion by setting characterAngle to 0 or a constant value
+            characterAngle = 0;
 
-                    // Increase score
-                    score++;
+            // Immediately update position using the calculated tangent vector
+            manX = tileCenterX + tangentX * radius - man[0].getWidth() / 2;
+            manY = tileCenterY + tangentY * radius - man[0].getHeight() / 2;
 
-                    isClimbing = true;
-                    manSpeed = 0; // Set climbing speed
-                    moveTiles = true;
-                    // Delay setting isClimbing to false until after the man has reached the top
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            moveTiles = false;
-                            isClimbing = false;
-                            manSpeed = 0;
-                        }
-                    }, 500);
-                }
-            }
+            manSpeed = 0;
         }
         return true;
     }

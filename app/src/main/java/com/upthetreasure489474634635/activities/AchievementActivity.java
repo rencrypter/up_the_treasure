@@ -15,7 +15,7 @@ import com.upthetreasure489474634635.databinding.ActivityAchievementBinding;
 public class AchievementActivity extends AppCompatActivity {
 
     ActivityAchievementBinding binding;
-
+    ImageAdapter adapter;
     private Integer[] images = {
             R.drawable.ic_lock_gallery,
             R.drawable.ic_lock_gallery,
@@ -30,6 +30,7 @@ public class AchievementActivity extends AppCompatActivity {
             R.drawable.ic_lock_gallery,
             R.drawable.ic_lock_gallery
     };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,25 +38,17 @@ public class AchievementActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         //
-        ImageAdapter adapter = new ImageAdapter(this, images);
+        adapter = new ImageAdapter(this, images);
         binding.gridView.setAdapter(adapter);
 
-//        // Change the image at a specific index (for example, index 2).
-//        int indexToChange = 2;
-//        int newImageResource = R.drawable.new_image; // Replace 'new_image' with your desired image resource
-//
-//        if (indexToChange >= 0 && indexToChange < images.length) {
-//            images[indexToChange] = newImageResource;
-//            adapter.notifyDataSetChanged(); // Notify the adapter that the data has changed
-//        } else {
-//            // Handle invalid index
-//        }
+
+        dataLoad();
         binding.gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 // Handle grid item click if needed
                 // For example, you can display the clicked image in a larger ImageView
-                if(Ref.isSoundEnabled){
+                if (Ref.isSoundEnabled) {
                     SoundsClass.playButtonClickSound(AchievementActivity.this);
                 }
             }
@@ -64,7 +57,7 @@ public class AchievementActivity extends AppCompatActivity {
         binding.backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(Ref.isSoundEnabled){
+                if (Ref.isSoundEnabled) {
                     SoundsClass.playButtonClickSound(AchievementActivity.this);
                 }
                 finish();
@@ -74,4 +67,154 @@ public class AchievementActivity extends AppCompatActivity {
         //
 
     }
+
+
+    private void dataLoad() {
+        if (Ref.achi1) {
+            // Change the image at a specific index (for example, index 2).
+            int indexToChange = 0;
+            int newImageResource = R.drawable.ic_achie_gallery_1; // Replace 'new_image' with your desired image resource
+
+            if (indexToChange >= 0 && indexToChange < images.length) {
+                images[indexToChange] = newImageResource;
+                adapter.notifyDataSetChanged(); // Notify the adapter that the data has changed
+            } else {
+                // Handle invalid index
+            }
+        }
+        if (Ref.achi2) {
+            // Change the image at a specific index (for example, index 2).
+            int indexToChange = 1;
+            int newImageResource = R.drawable.ic_achie_gallery_2; // Replace 'new_image' with your desired image resource
+
+            if (indexToChange >= 1 && indexToChange < images.length) {
+                images[indexToChange] = newImageResource;
+                adapter.notifyDataSetChanged(); // Notify the adapter that the data has changed
+            } else {
+                // Handle invalid index
+            }
+        }
+        if (Ref.achi3) {
+            // Change the image at a specific index (for example, index 2).
+            int indexToChange = 2;
+            int newImageResource = R.drawable.ic_achie_gallery_3; // Replace 'new_image' with your desired image resource
+
+            if (indexToChange >= 2 && indexToChange < images.length) {
+                images[indexToChange] = newImageResource;
+                adapter.notifyDataSetChanged(); // Notify the adapter that the data has changed
+            } else {
+                // Handle invalid index
+            }
+        }
+        if (Ref.achi4) {
+            // Change the image at a specific index (for example, index 2).
+            int indexToChange = 3;
+            int newImageResource = R.drawable.ic_achie_gallery_4; // Replace 'new_image' with your desired image resource
+
+            if (indexToChange >= 3 && indexToChange < images.length) {
+                images[indexToChange] = newImageResource;
+                adapter.notifyDataSetChanged(); // Notify the adapter that the data has changed
+            } else {
+                // Handle invalid index
+            }
+        }
+        if (Ref.achi5) {
+            // Change the image at a specific index (for example, index 2).
+            int indexToChange = 4;
+            int newImageResource = R.drawable.ic_achie_gallery_5; // Replace 'new_image' with your desired image resource
+
+            if (indexToChange >=4 && indexToChange < images.length) {
+                images[indexToChange] = newImageResource;
+                adapter.notifyDataSetChanged(); // Notify the adapter that the data has changed
+            } else {
+                // Handle invalid index
+            }
+        }
+        if (Ref.achi6) {
+            // Change the image at a specific index (for example, index 2).
+            int indexToChange = 5;
+            int newImageResource = R.drawable.ic_achie_gallery_6; // Replace 'new_image' with your desired image resource
+
+            if (indexToChange >= 5 && indexToChange < images.length) {
+                images[indexToChange] = newImageResource;
+                adapter.notifyDataSetChanged(); // Notify the adapter that the data has changed
+            } else {
+                // Handle invalid index
+            }
+        }
+        if (Ref.achi7) {
+            // Change the image at a specific index (for example, index 2).
+            int indexToChange = 6;
+            int newImageResource = R.drawable.ic_achie_gallery_7; // Replace 'new_image' with your desired image resource
+
+            if (indexToChange >= 6 && indexToChange < images.length) {
+                images[indexToChange] = newImageResource;
+                adapter.notifyDataSetChanged(); // Notify the adapter that the data has changed
+            } else {
+                // Handle invalid index
+            }
+        }
+        if (Ref.achi8) {
+            // Change the image at a specific index (for example, index 2).
+            int indexToChange = 7;
+            int newImageResource = R.drawable.ic_achie_gallery_8; // Replace 'new_image' with your desired image resource
+
+            if (indexToChange >= 7 && indexToChange < images.length) {
+                images[indexToChange] = newImageResource;
+                adapter.notifyDataSetChanged(); // Notify the adapter that the data has changed
+            } else {
+                // Handle invalid index
+            }
+        }
+        if (Ref.achi9) {
+            // Change the image at a specific index (for example, index 2).
+            int indexToChange = 8;
+            int newImageResource = R.drawable.ic_achie_gallery_9; // Replace 'new_image' with your desired image resource
+
+            if (indexToChange >= 8 && indexToChange < images.length) {
+                images[indexToChange] = newImageResource;
+                adapter.notifyDataSetChanged(); // Notify the adapter that the data has changed
+            } else {
+                // Handle invalid index
+            }
+        }
+        if (Ref.achi10) {
+            // Change the image at a specific index (for example, index 2).
+            int indexToChange = 9;
+            int newImageResource = R.drawable.ic_achie_gallery_10; // Replace 'new_image' with your desired image resource
+
+            if (indexToChange >= 9 && indexToChange < images.length) {
+                images[indexToChange] = newImageResource;
+                adapter.notifyDataSetChanged(); // Notify the adapter that the data has changed
+            } else {
+                // Handle invalid index
+            }
+        }
+        if (Ref.achi11) {
+            // Change the image at a specific index (for example, index 2).
+            int indexToChange = 10;
+            int newImageResource = R.drawable.ic_achie_gallery_11; // Replace 'new_image' with your desired image resource
+
+            if (indexToChange >= 10 && indexToChange < images.length) {
+                images[indexToChange] = newImageResource;
+                adapter.notifyDataSetChanged(); // Notify the adapter that the data has changed
+            } else {
+                // Handle invalid index
+            }
+        }
+        if (Ref.achi12) {
+            // Change the image at a specific index (for example, index 2).
+            int indexToChange = 11;
+            int newImageResource = R.drawable.ic_achie_gallery_12; // Replace 'new_image' with your desired image resource
+
+            if (indexToChange >= 11 && indexToChange < images.length) {
+                images[indexToChange] = newImageResource;
+                adapter.notifyDataSetChanged(); // Notify the adapter that the data has changed
+            } else {
+                // Handle invalid index
+            }
+        }
+
+    }
+
 }

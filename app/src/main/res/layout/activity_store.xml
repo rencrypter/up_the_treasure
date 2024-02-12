@@ -102,7 +102,7 @@
         android:layout_weight="1.5">
 
         <ImageView
-            android:id="@+id/selecte_btn"
+            android:id="@+id/select_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"

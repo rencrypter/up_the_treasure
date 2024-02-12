@@ -5,11 +5,15 @@ import static com.upthetreasure489474634635.Ref.isSoundEnabled;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
 import com.upthetreasure489474634635.R;
+import com.upthetreasure489474634635.Ref;
 import com.upthetreasure489474634635.SoundsClass;
 import com.upthetreasure489474634635.databinding.ActivityStoreBinding;
+
+import io.paperdb.Paper;
 
 public class StoreActivity extends AppCompatActivity {
 
@@ -37,6 +41,8 @@ public class StoreActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityStoreBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        //
+        Paper.init(this);
         //
 
         updateImageView();
@@ -70,6 +76,14 @@ public class StoreActivity extends AppCompatActivity {
             }
         });
 
+        //select btn
+        binding.selectBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Ref.character = currentImageIndex+1;
+                Paper.book().write("character",Ref.character);
+            }
+        });
     }
 
     private void updateImageView() {
