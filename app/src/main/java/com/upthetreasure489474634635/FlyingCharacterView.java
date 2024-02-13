@@ -9,6 +9,9 @@ import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Typeface;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.LayerDrawable;
 import android.os.Handler;
 import android.view.MotionEvent;
 import android.view.View;
@@ -28,8 +31,6 @@ public class FlyingCharacterView extends View {
     private Bitmap background;
     private Paint scorePaint = new Paint();
 
-
-    Boolean touch = false;
     //
     private int score;
 
@@ -65,10 +66,14 @@ public class FlyingCharacterView extends View {
 
     Bitmap lava;
 
+
+    //
     public FlyingCharacterView(Context context) {
         super(context);
 
         background = BitmapFactory.decodeResource(getResources(), R.drawable.bg);
+        setBackground(new BitmapDrawable(getResources(), background));
+
         lava = BitmapFactory.decodeResource(getResources(), R.drawable.ic_lawa_draw);
         matrix = new Matrix();
         //
@@ -156,6 +161,7 @@ public class FlyingCharacterView extends View {
             man[1] = BitmapFactory.decodeResource(getResources(), R.drawable.men1_2);
         } else if (Ref.character == 2) {
             man[0] = BitmapFactory.decodeResource(getResources(), R.drawable.men2_1);
+
             man[1] = BitmapFactory.decodeResource(getResources(), R.drawable.men2_2);
         } else if (Ref.character == 3) {
             man[0] = BitmapFactory.decodeResource(getResources(), R.drawable.men3_1);
@@ -196,7 +202,7 @@ public class FlyingCharacterView extends View {
         canvasWidth = canvas.getWidth();
         canvasHeight = canvas.getHeight();
 
-        canvas.drawBitmap(background, 0, 0, null); //bg
+//        canvas.drawBitmap(background, 0, 0, null); //bg
 
         if (moveTiles) {
             for (int i = 0; i < numTiles; i++) {
@@ -224,8 +230,6 @@ public class FlyingCharacterView extends View {
         }
         //
         // Character movement
-
-
         //
         manY = manY + manSpeed;
         manSpeed = Math.min(manSpeed + 2, 20); // Limit speed
@@ -240,6 +244,7 @@ public class FlyingCharacterView extends View {
         if (manY > maxmanY) {
             manY = maxmanY;
         }
+        //
         manSpeed = manSpeed + 2;
         // Calculate the center of the tile
         tileCenterX = tileX[0] + tile.getWidth() / 2;
@@ -258,13 +263,15 @@ public class FlyingCharacterView extends View {
         matrix.postTranslate(characterXPos, characterYPos);
         matrix.postRotate((float) Math.toDegrees(characterAngle), characterXPos + man[0].getWidth() / 2, characterYPos + man[0].getHeight() / 2);
 
-        // Draw the character at the calculated position with rotation
         if (isClimbing) {
             canvas.drawBitmap(man[1], manX, manY, null);
 //            isClimbing = false;
         } else {
             canvas.drawBitmap(man[0], matrix, null);
+
         }
+
+
         //coins
         coinY = coinY + coinSpeed;
         if (hitBallChecker(coinX, coinY)) {
@@ -374,9 +381,6 @@ public class FlyingCharacterView extends View {
             isClimbing = true;
             Ref.countForAchiev++;
 //            // Set the man's position to the tap coordinates
-//            manX = (int) event.getX() - man[0].getWidth() / 2;
-//            manY = (int) event.getY() - man[0].getHeight() / 2;
-
             double deltaX = tileCenterX - manX - man[0].getWidth() / 2;
             double deltaY = tileCenterY - manY - man[0].getHeight() / 2;
 
@@ -385,29 +389,27 @@ public class FlyingCharacterView extends View {
             long tangentX = Math.round(deltaX / distance);
             long tangentY = Math.round(deltaY / distance);
 
-            // Stop circular motion by setting characterAngle to 0 or a constant value
-            characterAngle = 0;
-
             // Immediately update position using the calculated tangent vector
             manX = tileCenterX + tangentX * radius - man[0].getWidth() / 2;
             manY = tileCenterY + tangentY * radius - man[0].getHeight() / 2;
-
+            // Stop circular motion by setting characterAngle to 0 or a constant value
+            characterAngle = 0;
             manSpeed = 0;
         }
         return true;
     }
 
 
-    private int findCurrentTile(int manX, int manY) {
-        for (int i = numTiles - 2; i >= 0; i--) {
-            if (manX >= tileX[i] - tile.getWidth() / 2 // Offset by half tile width
-                    && manX <= tileX[i] + tile.getWidth() / 2 // Offset by half tile width
-                    && manY >= tileY[i] && manY <= (tileY[i] + tile.getHeight())) {
-                return i + 1; // Return index of tile above current tile
-            }
-        }
-        return 0;
-    }
+//    private int findCurrentTile(int manX, int manY) {
+//        for (int i = numTiles - 2; i >= 0; i--) {
+//            if (manX >= tileX[i] - tile.getWidth() / 2 // Offset by half tile width
+//                    && manX <= tileX[i] + tile.getWidth() / 2 // Offset by half tile width
+//                    && manY >= tileY[i] && manY <= (tileY[i] + tile.getHeight())) {
+//                return i + 1; // Return index of tile above current tile
+//            }
+//        }
+//        return 0;
+//    }
 
 
 }
