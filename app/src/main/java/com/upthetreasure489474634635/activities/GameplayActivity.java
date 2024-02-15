@@ -2,10 +2,13 @@ package com.upthetreasure489474634635.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.graphics.Point;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.WindowManager;
 
 import com.upthetreasure489474634635.FlyingCharacterView;
+import com.upthetreasure489474634635.assets.Gameview;
 import com.upthetreasure489474634635.databinding.ActivityGameplayBinding;
 
 import java.util.Timer;
@@ -13,29 +16,35 @@ import java.util.TimerTask;
 
 public class GameplayActivity extends AppCompatActivity {
 
-    private FlyingCharacterView gameView;
 
-    private Handler handler = new Handler();
-    private final static long Interval = 30;
+    Gameview gameview;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        gameView = new FlyingCharacterView(this);
-        setContentView(gameView);
-        //
-        Timer timer = new Timer();
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                handler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        gameView.invalidate();
-                    }
-                });
-            }
-        },0, Interval);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        Point point = new Point();
+        getWindowManager().getDefaultDisplay().getSize(point);
 
+        //set Gameview
+        gameview = new Gameview(this, point.x, point.y);
+        setContentView(gameview);
+
+        //
+
+    }
+
+    //
+    @Override
+    protected void onPause() {
+        super.onPause();
+        gameview.pause();
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        gameview.resume();
     }
 }

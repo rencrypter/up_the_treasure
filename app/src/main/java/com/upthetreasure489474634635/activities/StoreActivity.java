@@ -45,6 +45,8 @@ public class StoreActivity extends AppCompatActivity {
         Paper.init(this);
         //
 
+        binding.scoreTxt.setText(Ref.score);
+
         updateImageView();
         binding.backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
