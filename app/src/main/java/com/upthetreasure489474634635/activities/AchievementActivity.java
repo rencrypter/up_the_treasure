@@ -9,6 +9,7 @@ import android.widget.AdapterView;
 import com.upthetreasure489474634635.R;
 import com.upthetreasure489474634635.Ref;
 import com.upthetreasure489474634635.SoundsClass;
+import com.upthetreasure489474634635.VibrationEffect;
 import com.upthetreasure489474634635.adapters.ImageAdapter;
 import com.upthetreasure489474634635.databinding.ActivityAchievementBinding;
 
@@ -59,6 +60,9 @@ public class AchievementActivity extends AppCompatActivity {
             public void onClick(View view) {
                 if (Ref.isSoundEnabled) {
                     SoundsClass.playButtonClickSound(AchievementActivity.this);
+                }
+                if(Ref.isVibrateEnabled){
+                    VibrationEffect.VibrationEffect(AchievementActivity.this);
                 }
                 finish();
             }

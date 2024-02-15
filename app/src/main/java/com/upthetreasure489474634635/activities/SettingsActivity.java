@@ -19,6 +19,7 @@ import android.view.View;
 import com.upthetreasure489474634635.R;
 import com.upthetreasure489474634635.Ref;
 import com.upthetreasure489474634635.SoundsClass;
+import com.upthetreasure489474634635.VibrationEffect;
 import com.upthetreasure489474634635.databinding.ActivitySettingsBinding;
 
 import java.util.Locale;
@@ -96,6 +97,9 @@ public class SettingsActivity extends AppCompatActivity {
                 if (isSoundEnabled) {
                     SoundsClass.playButtonClickSound(SettingsActivity.this);
                 }
+                if(Ref.isVibrateEnabled){
+                    VibrationEffect.VibrationEffect(SettingsActivity.this);
+                }
                 startActivity(new Intent(SettingsActivity.this, MenuScreenActivity.class));
                 finish();
             }
@@ -106,6 +110,9 @@ public class SettingsActivity extends AppCompatActivity {
             public void onClick(View view) {
                 if (isSoundEnabled) {
                     SoundsClass.playButtonClickSound(SettingsActivity.this);
+                }
+                if(Ref.isVibrateEnabled){
+                    VibrationEffect.VibrationEffect(SettingsActivity.this);
                 }
                 // Change the image to the next one in the cycle
                 binding.langBtn.setImageResource(drawableIds[currentIndex]);

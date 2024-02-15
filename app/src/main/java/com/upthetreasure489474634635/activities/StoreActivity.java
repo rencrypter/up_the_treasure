@@ -11,6 +11,7 @@ import android.view.View;
 import com.upthetreasure489474634635.R;
 import com.upthetreasure489474634635.Ref;
 import com.upthetreasure489474634635.SoundsClass;
+import com.upthetreasure489474634635.VibrationEffect;
 import com.upthetreasure489474634635.databinding.ActivityStoreBinding;
 
 import io.paperdb.Paper;
@@ -54,6 +55,9 @@ public class StoreActivity extends AppCompatActivity {
                 if (isSoundEnabled) {
                     SoundsClass.playButtonClickSound(StoreActivity.this);
                 }
+                if(Ref.isVibrateEnabled){
+                    VibrationEffect.VibrationEffect(StoreActivity.this);
+                }
                 showPreviousImage();
             }
         });
@@ -64,6 +68,9 @@ public class StoreActivity extends AppCompatActivity {
                 if (isSoundEnabled) {
                     SoundsClass.playButtonClickSound(StoreActivity.this);
                 }
+                if(Ref.isVibrateEnabled){
+                    VibrationEffect.VibrationEffect(StoreActivity.this);
+                }
                 showNextImage();
             }
         });
@@ -73,6 +80,9 @@ public class StoreActivity extends AppCompatActivity {
             public void onClick(View view) {
                 if (isSoundEnabled) {
                     SoundsClass.playButtonClickSound(StoreActivity.this);
+                }
+                if(Ref.isVibrateEnabled){
+                    VibrationEffect.VibrationEffect(StoreActivity.this);
                 }
                 finish();
             }

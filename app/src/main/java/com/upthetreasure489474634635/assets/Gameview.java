@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import com.upthetreasure489474634635.R;
 import com.upthetreasure489474634635.Ref;
+import com.upthetreasure489474634635.VibrationEffect;
 import com.upthetreasure489474634635.activities.GameOverActivity;
 
 import java.util.Random;
@@ -324,6 +325,9 @@ public class Gameview extends SurfaceView implements Runnable {
         // Stop the game
         isPlaying = false;
 
+//        if(Ref.isVibrateEnabled){
+//            VibrationEffect.VibrationEffect();
+//        }
         // Show a toast message on the UI thread
         post(new Runnable() {
             @Override
