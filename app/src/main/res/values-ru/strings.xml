@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Up the treasure</string>
+    <string name="game_over">игра закончена</string>
+    <string name="score">"счет : "</string>
+    <string name="selected">Выбрано!</string>
+    <string name="cant_buy">Не будь, не будь достаточно</string>
 </resources>

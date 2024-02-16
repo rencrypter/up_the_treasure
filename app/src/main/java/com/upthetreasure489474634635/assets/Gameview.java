@@ -62,6 +62,9 @@ public class Gameview extends SurfaceView implements Runnable {
 
     public Gameview(Context context, int ScreenX, int ScreenY) {
         super(context);
+        //
+        Paper.init(context);
+        //
         matrix = new Matrix();//matrix
         this.screenX = ScreenX;
         this.screenY = ScreenY;
@@ -154,13 +157,14 @@ public class Gameview extends SurfaceView implements Runnable {
                 treasureX = (int) Math.floor(Math.random() * (maxmanY - minmanY) + minmanY);
 
                 Ref.currentTreasureIndex = (Ref.currentTreasureIndex + 1) % treasure.treasure.length;  // Move to the next bitmap in a circular manner
+                Paper.book().write("counting", Ref.currentTreasureIndex);
             }
             canvas.drawBitmap(treasure.treasure[Ref.currentTreasureIndex], treasureX, treasureY, null);
 
             lavaBoundry = canvas.getHeight() - background1.lavaHeight;
             canvas.drawBitmap(background1.lava, background1.x, canvas.getHeight() - background1.lavaHeight, paint);
             //score
-            canvas.drawText("Score : " + Ref.score, 20, 60, scorePaint);//scorepaint
+            canvas.drawText(getContext().getString(R.string.score) + Ref.score, 20, 60, scorePaint);//scorepaint
             getHolder().unlockCanvasAndPost(canvas);
 
         }
@@ -220,7 +224,7 @@ public class Gameview extends SurfaceView implements Runnable {
             Paper.book().write("achi12", Ref.achi12);
         }
 
-        Paper.book().write("counting", Ref.currentTreasureIndex);
+
     }
 
     private boolean hitWithCoinsChecker(int x, int y) {
@@ -325,14 +329,11 @@ public class Gameview extends SurfaceView implements Runnable {
         // Stop the game
         isPlaying = false;
 
-//        if(Ref.isVibrateEnabled){
-//            VibrationEffect.VibrationEffect();
-//        }
         // Show a toast message on the UI thread
         post(new Runnable() {
             @Override
             public void run() {
-                Toast.makeText(getContext(), "Game Over", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), R.string.game_over, Toast.LENGTH_SHORT).show();
                 Intent i = new Intent(getContext(), GameOverActivity.class);
                 i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 getContext().startActivity(i);

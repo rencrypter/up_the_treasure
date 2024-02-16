@@ -13,6 +13,18 @@ public class Ref {
     public static boolean isSoundEnabled = false;
     public static boolean isVibrateEnabled = false;
 
+    //char
+    public static boolean ch1 = false;
+    public static boolean ch2 = false;
+    public static boolean ch3 = false;
+    public static boolean ch4 = false;
+    public static boolean ch5 = false;
+    public static boolean ch6 = false;
+    public static boolean ch7= false;
+    public static boolean ch8= false;
+    public static boolean ch9 = false;
+    public static boolean ch10 = false;
+    public static boolean ch11 = false;
     //achieve
     public static boolean achi1 = false;
     public static boolean achi2 = false;

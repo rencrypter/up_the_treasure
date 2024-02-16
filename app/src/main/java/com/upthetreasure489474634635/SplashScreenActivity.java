@@ -1,5 +1,7 @@
 package com.upthetreasure489474634635;
 
+import static com.upthetreasure489474634635.activities.SettingsActivity.changeLanguageApp;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -8,6 +10,7 @@ import android.os.Handler;
 
 import com.upthetreasure489474634635.activities.GameplayActivity;
 import com.upthetreasure489474634635.activities.MenuScreenActivity;
+import com.upthetreasure489474634635.activities.SettingsActivity;
 import com.upthetreasure489474634635.databinding.ActivitySplashScreenBinding;
 
 import io.paperdb.Paper;
@@ -37,6 +40,8 @@ public class SplashScreenActivity extends AppCompatActivity {
     private void loadDb() {
         if ((Paper.book().read("lang")) != null) {
             Ref.lang = Paper.book().read("lang");
+
+            loadLanguage();
         }
         //
         if ((Paper.book().read("isVibrate")) != null) {
@@ -55,8 +60,54 @@ public class SplashScreenActivity extends AppCompatActivity {
         if ((Paper.book().read("score")) != null) {
             Ref.score = (Paper.book().read("score"));
         }
-
+        updateCharacterBtnThatAreBuyAlready();
         achieveLoadFromDb();
+    }
+
+    private void updateCharacterBtnThatAreBuyAlready() {
+        if ((Paper.book().read("ch1")) != null) {
+            Ref.ch1 = (Paper.book().read("ch1"));
+        }
+        if ((Paper.book().read("ch2")) != null) {
+            Ref.ch2 = (Paper.book().read("ch2"));
+        }
+        if ((Paper.book().read("ch3")) != null) {
+            Ref.ch3 = (Paper.book().read("ch3"));
+        }
+        if ((Paper.book().read("ch4")) != null) {
+            Ref.ch4 = (Paper.book().read("ch4"));
+        }
+        if ((Paper.book().read("ch5")) != null) {
+            Ref.ch5 = (Paper.book().read("ch5"));
+        }
+        if ((Paper.book().read("ch6")) != null) {
+            Ref.ch6 = (Paper.book().read("ch6"));
+        }
+        if ((Paper.book().read("ch7")) != null) {
+            Ref.ch7 = (Paper.book().read("ch7"));
+        }
+        if ((Paper.book().read("ch8")) != null) {
+            Ref.ch8 = (Paper.book().read("ch8"));
+        }
+        if ((Paper.book().read("ch9")) != null) {
+            Ref.ch9 = (Paper.book().read("ch9"));
+        }
+        if ((Paper.book().read("ch10")) != null) {
+            Ref.ch10 = (Paper.book().read("ch10"));
+        }
+        if ((Paper.book().read("ch11")) != null) {
+            Ref.ch11 = (Paper.book().read("ch11"));
+        }
+    }
+
+    private void loadLanguage() {
+        if (Ref.lang == 1) {
+            changeLanguageApp("en", SplashScreenActivity.this);
+        } else if (Ref.lang == 2) {
+            changeLanguageApp("pt", SplashScreenActivity.this);
+        } else if (Ref.lang == 0) {
+            changeLanguageApp("ru", SplashScreenActivity.this);
+        }
     }
 
     private void achieveLoadFromDb() {

@@ -173,7 +173,7 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
 
-    private void changeLanguageApp(String lan, Activity a) {
+    public static void changeLanguageApp(String lan, Activity a) {
 
         Locale locale = new Locale(lan);
         Locale.setDefault(locale);

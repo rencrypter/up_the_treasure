@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Up the treasure</string>
+    <string name="game_over">Tim do Jogo</string>
+    <string name="score">"pontuação : "</string>
+    <string name="selected">Selecionado!</string>
+    <string name="cant_buy">Não seja, não seja o suficiente</string>
 </resources>

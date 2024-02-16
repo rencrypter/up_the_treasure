@@ -8,6 +8,8 @@ import android.view.View;
 
 import com.upthetreasure489474634635.R;
 import com.upthetreasure489474634635.Ref;
+import com.upthetreasure489474634635.SoundsClass;
+import com.upthetreasure489474634635.VibrationEffect;
 import com.upthetreasure489474634635.databinding.ActivityGameOverBinding;
 import com.upthetreasure489474634635.databinding.ActivityGameplayBinding;
 
@@ -29,6 +31,12 @@ public class GameOverActivity extends AppCompatActivity {
         binding.returnBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if(Ref.isSoundEnabled){
+                    SoundsClass.playButtonClickSound(GameOverActivity.this);
+                }
+                if(Ref.isVibrateEnabled){
+                    VibrationEffect.VibrationEffect(GameOverActivity.this);
+                }
                 startActivity(new Intent(GameOverActivity.this, GameplayActivity.class));
                 finish();
             }
@@ -37,6 +45,12 @@ public class GameOverActivity extends AppCompatActivity {
         binding.menuBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if(Ref.isSoundEnabled){
+                    SoundsClass.playButtonClickSound(GameOverActivity.this);
+                }
+                if(Ref.isVibrateEnabled){
+                    VibrationEffect.VibrationEffect(GameOverActivity.this);
+                }
                 startActivity(new Intent(GameOverActivity.this, MenuScreenActivity.class));
                 finish();
             }
