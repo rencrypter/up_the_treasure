@@ -173,7 +173,7 @@ public class Gameview extends SurfaceView implements Runnable {
             lavaBoundry = canvas.getHeight() - background1.lavaHeight;
             canvas.drawBitmap(background1.lava, background1.x, canvas.getHeight() - background1.lavaHeight, paint);
             //score
-            canvas.drawText(getContext().getString(R.string.score) + Ref.score, 70, 60, scorePaint);//scorepaint
+            canvas.drawText(getContext().getString(R.string.score) + Ref.score, (canvas.getWidth() - scoreBoard.bitmapWidth) /2, 60, scorePaint);//scorepaint
             getHolder().unlockCanvasAndPost(canvas);
 
         }
@@ -368,7 +368,7 @@ public class Gameview extends SurfaceView implements Runnable {
 
     private void sleep() {
         try {
-            Thread.sleep(17);
+            Thread.sleep(20);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }

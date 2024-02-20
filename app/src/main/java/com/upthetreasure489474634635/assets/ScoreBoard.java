@@ -42,11 +42,9 @@ public class ScoreBoard extends View {
     @Override
     protected void onDraw(Canvas canvas) {
 
-
-
-// Calculate the coordinates to draw the bitmap in the center
+        // Calculate the coordinates to draw the bitmap in the center
         int x = (canvasWidth - bitmapWidth) / 2;
-        int y = (canvasHeight - bitmapHeight) / 2;
+        int y = 10;
         canvas.drawBitmap(scoreBoard, x, y, paint);
     }
 
