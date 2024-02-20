@@ -34,9 +34,9 @@ public class GameOverActivity extends AppCompatActivity {
                 if(Ref.isSoundEnabled){
                     SoundsClass.playButtonClickSound(GameOverActivity.this);
                 }
-                if(Ref.isVibrateEnabled){
-                    VibrationEffect.VibrationEffect(GameOverActivity.this);
-                }
+//                if(Ref.isVibrateEnabled){
+//                    VibrationEffect.VibrationEffect(GameOverActivity.this);
+//                }
                 startActivity(new Intent(GameOverActivity.this, GameplayActivity.class));
                 finish();
             }
@@ -48,9 +48,9 @@ public class GameOverActivity extends AppCompatActivity {
                 if(Ref.isSoundEnabled){
                     SoundsClass.playButtonClickSound(GameOverActivity.this);
                 }
-                if(Ref.isVibrateEnabled){
-                    VibrationEffect.VibrationEffect(GameOverActivity.this);
-                }
+//                if(Ref.isVibrateEnabled){
+//                    VibrationEffect.VibrationEffect(GameOverActivity.this);
+//                }
                 startActivity(new Intent(GameOverActivity.this, MenuScreenActivity.class));
                 finish();
             }

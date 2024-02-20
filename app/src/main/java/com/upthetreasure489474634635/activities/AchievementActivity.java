@@ -61,9 +61,9 @@ public class AchievementActivity extends AppCompatActivity {
                 if (Ref.isSoundEnabled) {
                     SoundsClass.playButtonClickSound(AchievementActivity.this);
                 }
-                if(Ref.isVibrateEnabled){
-                    VibrationEffect.VibrationEffect(AchievementActivity.this);
-                }
+//                if(Ref.isVibrateEnabled){
+//                    VibrationEffect.VibrationEffect(AchievementActivity.this);
+//                }
                 finish();
             }
         });

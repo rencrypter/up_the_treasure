@@ -20,6 +20,7 @@ import com.upthetreasure489474634635.R;
 import com.upthetreasure489474634635.Ref;
 import com.upthetreasure489474634635.VibrationEffect;
 import com.upthetreasure489474634635.activities.GameOverActivity;
+import com.upthetreasure489474634635.activities.MenuScreenActivity;
 
 import java.util.Random;
 
@@ -37,6 +38,9 @@ public class Gameview extends SurfaceView implements Runnable {
     private Background background1;
     private CharacterMan character;
     private Mountains[] mountains;
+
+    private HomeButton homeButton;
+    private ScoreBoard scoreBoard;
 
     //
     Treasure treasure;
@@ -73,6 +77,8 @@ public class Gameview extends SurfaceView implements Runnable {
         screenRatioY = 1080f / screenY;
 
         background1 = new Background(screenX, screenY, getResources());
+        homeButton = new HomeButton(getContext(), getResources());
+        scoreBoard = new ScoreBoard(getContext(), getResources(), screenX, screenY);
         character = new CharacterMan(this, getResources());
 
         treasure = new Treasure(getResources());
@@ -97,7 +103,7 @@ public class Gameview extends SurfaceView implements Runnable {
 
 
         scorePaint.setColor(Color.WHITE);
-        scorePaint.setTextSize(50);
+        scorePaint.setTextSize(18);
         scorePaint.setTypeface(Typeface.DEFAULT_BOLD);
         scorePaint.setAntiAlias(true);
 
@@ -120,6 +126,9 @@ public class Gameview extends SurfaceView implements Runnable {
 
             Canvas canvas = getHolder().lockCanvas();
             canvas.drawBitmap(background1.background, background1.x, background1.y, paint);
+
+            homeButton.draw(canvas);
+            scoreBoard.draw(canvas);
 
             if (!isCharacterRevolve) {
                 revolveAroundTheMountain(canvas);
@@ -164,7 +173,7 @@ public class Gameview extends SurfaceView implements Runnable {
             lavaBoundry = canvas.getHeight() - background1.lavaHeight;
             canvas.drawBitmap(background1.lava, background1.x, canvas.getHeight() - background1.lavaHeight, paint);
             //score
-            canvas.drawText(getContext().getString(R.string.score) + Ref.score, 20, 60, scorePaint);//scorepaint
+            canvas.drawText(getContext().getString(R.string.score) + Ref.score, 70, 60, scorePaint);//scorepaint
             getHolder().unlockCanvasAndPost(canvas);
 
         }
@@ -328,7 +337,10 @@ public class Gameview extends SurfaceView implements Runnable {
     private void gameOver() {
         // Stop the game
         isPlaying = false;
-
+        //vibrate
+        if (Ref.isVibrateEnabled) {
+            VibrationEffect.VibrationEffect(getContext());
+        }
         // Show a toast message on the UI thread
         post(new Runnable() {
             @Override
@@ -385,16 +397,33 @@ public class Gameview extends SurfaceView implements Runnable {
     //ontouch Listener
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+
+        float touchX = event.getX();
+        float touchY = event.getY();
+
+
+        // Handle taps within the home button (existing code)
+//        if (homeButton.onTouchEvent(event)) {
+//            Toast.makeText(getContext(), "hihihih", Toast.LENGTH_SHORT).show();
+//            return true;
+//        }
+
+        // Handle outside taps here
         if (!isMovingCharacter) {
             isCharacterRevolve = true;
             isMovingCharacter = true;
             Ref.countForAchiev++;
             moveCharacTowardsTangent(event.getX(), event.getY());
             angle = 0;
+
+            // Return true to consume the event
+            return true;
         }
 
-        return true;
+        // Return false for unhandled events
+        return false;
     }
+
 
     private void moveCharacTowardsTangent(float targetX, float targetY) {
         new Thread(new Runnable() {

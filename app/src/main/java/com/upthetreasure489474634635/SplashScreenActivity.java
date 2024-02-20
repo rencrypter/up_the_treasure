@@ -4,6 +4,9 @@ import static com.upthetreasure489474634635.activities.SettingsActivity.changeLa
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
+import android.app.ActivityManager;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -26,6 +29,7 @@ public class SplashScreenActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
         //
         Paper.init(this);
+
         //
         loadDb();
         new Handler().postDelayed(new Runnable() {
@@ -34,7 +38,7 @@ public class SplashScreenActivity extends AppCompatActivity {
                 startActivity(new Intent(SplashScreenActivity.this, MenuScreenActivity.class));
                 finish();
             }
-        }, 2500);
+        }, 3200);
     }
 
     private void loadDb() {
@@ -147,5 +151,16 @@ public class SplashScreenActivity extends AppCompatActivity {
         if (Paper.book().read("achi12") != null) {
             Ref.achi12 = Paper.book().read("achi12");
         }
+    }
+
+    //service check whether its running or not
+    public static boolean isMyServiceRunning(Class<?> serviceClass, Activity a) {
+        ActivityManager manager = (ActivityManager) a.getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceClass.getName().equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
     }
 }

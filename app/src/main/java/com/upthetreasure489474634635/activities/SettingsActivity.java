@@ -16,11 +16,13 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.upthetreasure489474634635.R;
 import com.upthetreasure489474634635.Ref;
 import com.upthetreasure489474634635.SoundsClass;
 import com.upthetreasure489474634635.VibrationEffect;
 import com.upthetreasure489474634635.databinding.ActivitySettingsBinding;
+import com.upthetreasure489474634635.services.BgMusicService;
 
 import java.util.Locale;
 
@@ -61,14 +63,16 @@ public class SettingsActivity extends AppCompatActivity {
                     binding.soundBtn.setImageResource(R.drawable.sound_btn_off);
                     isSoundEnabled = false;
                     Paper.book().write("isSound", isSoundEnabled);
+                    stopService(new Intent(SettingsActivity.this, BgMusicService.class));
+
                 } else {
                     // If drawable is not changed, set it to the new drawable
                     binding.soundBtn.setImageResource(R.drawable.sound_btn);
                     isSoundEnabled = true;
                     Paper.book().write("isSound", isSoundEnabled);
+                    Intent i = new Intent(SettingsActivity.this, BgMusicService.class);
+                    startService(i);
                 }
-
-
             }
 
         });
@@ -97,9 +101,9 @@ public class SettingsActivity extends AppCompatActivity {
                 if (isSoundEnabled) {
                     SoundsClass.playButtonClickSound(SettingsActivity.this);
                 }
-                if(Ref.isVibrateEnabled){
-                    VibrationEffect.VibrationEffect(SettingsActivity.this);
-                }
+//                if(Ref.isVibrateEnabled){
+//                    VibrationEffect.VibrationEffect(SettingsActivity.this);
+//                }
                 startActivity(new Intent(SettingsActivity.this, MenuScreenActivity.class));
                 finish();
             }
@@ -111,9 +115,9 @@ public class SettingsActivity extends AppCompatActivity {
                 if (isSoundEnabled) {
                     SoundsClass.playButtonClickSound(SettingsActivity.this);
                 }
-                if(Ref.isVibrateEnabled){
-                    VibrationEffect.VibrationEffect(SettingsActivity.this);
-                }
+//                if(Ref.isVibrateEnabled){
+//                    VibrationEffect.VibrationEffect(SettingsActivity.this);
+//                }
                 // Change the image to the next one in the cycle
                 binding.langBtn.setImageResource(drawableIds[currentIndex]);
 

@@ -4,15 +4,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.graphics.Point;
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.WindowManager;
 
-import com.upthetreasure489474634635.FlyingCharacterView;
 import com.upthetreasure489474634635.assets.Gameview;
-import com.upthetreasure489474634635.databinding.ActivityGameplayBinding;
-
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class GameplayActivity extends AppCompatActivity {
 

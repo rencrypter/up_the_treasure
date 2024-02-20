@@ -4,5 +4,6 @@
     <string name="score">"Score : "</string>
     <string name="selected">Selected!</string>
     <string name="cant_buy">can\'t buy, dont have enough coins</string>
+    <string name="buy">Purchased!</string>
 
 </resources>

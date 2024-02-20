@@ -10,8 +10,9 @@ public class Ref {
     public static int currentTreasureIndex = 0;
     public static int currentIndex = 0;
     public static int score = 0;
-    public static boolean isSoundEnabled = false;
-    public static boolean isVibrateEnabled = false;
+    public static boolean isSoundEnabled = true;
+    public static boolean isVibrateEnabled = true;
+
 
     //char
     public static boolean ch1 = false;
