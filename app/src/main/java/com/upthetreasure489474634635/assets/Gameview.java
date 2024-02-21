@@ -197,51 +197,51 @@ public class Gameview extends SurfaceView implements Runnable {
     private void saveTreasureInDb() {
 
 
-        if (Ref.currentTreasureIndex == 1) {
+        if (Ref.currentTreasureIndex == 0) {
 
             Ref.achi1 = true;
             Paper.book().write("achi1", Ref.achi1);
-        } else if (Ref.currentTreasureIndex == 2) {
+        } else if (Ref.currentTreasureIndex == 1) {
 
             Ref.achi2 = true;
             Paper.book().write("achi2", Ref.achi2);
-        } else if (Ref.currentTreasureIndex == 3) {
+        } else if (Ref.currentTreasureIndex == 2) {
 
             Ref.achi3 = true;
             Paper.book().write("achi3", Ref.achi3);
-        } else if (Ref.currentTreasureIndex == 4) {
+        } else if (Ref.currentTreasureIndex == 3) {
 
             Ref.achi4 = true;
             Paper.book().write("achi4", Ref.achi4);
-        } else if (Ref.currentTreasureIndex == 5) {
+        } else if (Ref.currentTreasureIndex == 4) {
 
             Ref.achi5 = true;
             Paper.book().write("achi5", Ref.achi5);
-        } else if (Ref.currentTreasureIndex == 6) {
+        } else if (Ref.currentTreasureIndex == 5) {
 
             Ref.achi6 = true;
             Paper.book().write("achi6", Ref.achi6);
-        } else if (Ref.currentTreasureIndex == 7) {
+        } else if (Ref.currentTreasureIndex == 6) {
 
             Ref.achi7 = true;
             Paper.book().write("achi7", Ref.achi7);
-        } else if (Ref.currentTreasureIndex == 8) {
+        } else if (Ref.currentTreasureIndex == 7) {
 
             Ref.achi8 = true;
             Paper.book().write("achi8", Ref.achi8);
-        } else if (Ref.currentTreasureIndex == 9) {
+        } else if (Ref.currentTreasureIndex == 8) {
 
             Ref.achi9 = true;
             Paper.book().write("achi9", Ref.achi9);
-        } else if (Ref.currentTreasureIndex == 10) {
+        } else if (Ref.currentTreasureIndex == 9) {
 
             Ref.achi10 = true;
             Paper.book().write("achi10", Ref.achi10);
-        } else if (Ref.currentTreasureIndex == 11) {
+        } else if (Ref.currentTreasureIndex == 10) {
 
             Ref.achi11 = true;
             Paper.book().write("achi11", Ref.achi11);
-        } else if (Ref.currentTreasureIndex == 12) {
+        } else if (Ref.currentTreasureIndex == 11) {
 
             Ref.achi12 = true;
             Paper.book().write("achi12", Ref.achi12);

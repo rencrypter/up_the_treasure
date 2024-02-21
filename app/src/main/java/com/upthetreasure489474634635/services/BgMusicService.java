@@ -80,6 +80,7 @@ public class BgMusicService extends Service implements AudioManager.OnAudioFocus
         } else {
             audioManager.abandonAudioFocus(this);
         }
+        stopSelf();
     }
 
 
