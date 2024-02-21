@@ -28,6 +28,8 @@ public class GameOverActivity extends AppCompatActivity {
 
         binding.scoreTxt.setText(String.valueOf(Ref.score));
         //
+        achieve_display();
+        //
         binding.returnBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -55,5 +57,47 @@ public class GameOverActivity extends AppCompatActivity {
                 finish();
             }
         });
+    }
+
+    private void achieve_display() {
+
+
+        if(Ref.achi12){
+            binding.achieImg.setImageResource(R.drawable.ic_achie_gallery_12);
+            binding.achieImg.setVisibility(View.VISIBLE);
+        } else if (Ref.achi11) {
+            binding.achieImg.setImageResource(R.drawable.ic_achie_gallery_11);
+            binding.achieImg.setVisibility(View.VISIBLE);
+        }else if (Ref.achi10) {
+            binding.achieImg.setImageResource(R.drawable.ic_achie_gallery_10);
+            binding.achieImg.setVisibility(View.VISIBLE);
+        }else if (Ref.achi9) {
+            binding.achieImg.setImageResource(R.drawable.ic_achie_gallery_9);
+            binding.achieImg.setVisibility(View.VISIBLE);
+        }else if (Ref.achi8) {
+            binding.achieImg.setImageResource(R.drawable.ic_achie_gallery_8);
+            binding.achieImg.setVisibility(View.VISIBLE);
+        }else if (Ref.achi7) {
+            binding.achieImg.setImageResource(R.drawable.ic_achie_gallery_7);
+            binding.achieImg.setVisibility(View.VISIBLE);
+        }else if (Ref.achi6) {
+            binding.achieImg.setImageResource(R.drawable.ic_achie_gallery_6);
+            binding.achieImg.setVisibility(View.VISIBLE);
+        }else if (Ref.achi5) {
+            binding.achieImg.setImageResource(R.drawable.ic_achie_gallery_5);
+            binding.achieImg.setVisibility(View.VISIBLE);
+        }else if (Ref.achi4) {
+            binding.achieImg.setImageResource(R.drawable.ic_achie_gallery_4);
+            binding.achieImg.setVisibility(View.VISIBLE);
+        }else if (Ref.achi3) {
+            binding.achieImg.setImageResource(R.drawable.ic_achie_gallery_3);
+            binding.achieImg.setVisibility(View.VISIBLE);
+        }else if (Ref.achi2) {
+            binding.achieImg.setImageResource(R.drawable.ic_achie_gallery_2);
+            binding.achieImg.setVisibility(View.VISIBLE);
+        }else if (Ref.achi1) {
+            binding.achieImg.setImageResource(R.drawable.ic_achie_gallery_1);
+            binding.achieImg.setVisibility(View.VISIBLE);
+        }
     }
 }

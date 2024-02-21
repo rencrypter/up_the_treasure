@@ -14,6 +14,7 @@ import android.os.Handler;
 import android.os.SystemClock;
 import android.view.MotionEvent;
 import android.view.SurfaceView;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.upthetreasure489474634635.R;
@@ -27,6 +28,7 @@ import java.util.Random;
 import io.paperdb.Paper;
 
 public class Gameview extends SurfaceView implements Runnable {
+
 
     int screenX, screenY;
     int lavaBoundry;
@@ -64,6 +66,11 @@ public class Gameview extends SurfaceView implements Runnable {
     float characterXPos, characterYPos;
     private int collidingMountainIndex = 0;
 
+    private int lavaHeight = 0; // Initial lava height (adjust as needed)
+    private int lavaIncrement = 5; // Amount to increase lava height per tap
+
+    int canvasHeight = 0;
+
     public Gameview(Context context, int ScreenX, int ScreenY) {
         super(context);
         //
@@ -77,7 +84,7 @@ public class Gameview extends SurfaceView implements Runnable {
         screenRatioY = 1080f / screenY;
 
         background1 = new Background(screenX, screenY, getResources());
-        homeButton = new HomeButton(getContext(), getResources());
+//        homeButton = new HomeButton(getContext(), getResources());
         scoreBoard = new ScoreBoard(getContext(), getResources(), screenX, screenY);
         character = new CharacterMan(this, getResources());
 
@@ -88,10 +95,11 @@ public class Gameview extends SurfaceView implements Runnable {
         paint.setTextSize(128);
         paint.setColor(Color.WHITE);
 
-
         //mountains
         mountains = new Mountains[5];
 
+        //
+        lavaHeight = background1.lavaHeight;
 
         for (int i = 0; i < 5; i++) {
             mountains[i] = new Mountains(getResources());
@@ -103,8 +111,9 @@ public class Gameview extends SurfaceView implements Runnable {
 
 
         scorePaint.setColor(Color.WHITE);
-        scorePaint.setTextSize(18);
+        scorePaint.setTextSize(32);
         scorePaint.setTypeface(Typeface.DEFAULT_BOLD);
+        scorePaint.setTextAlign(Paint.Align.CENTER);
         scorePaint.setAntiAlias(true);
 
         random = new Random();
@@ -125,10 +134,15 @@ public class Gameview extends SurfaceView implements Runnable {
         if (getHolder().getSurface().isValid()) {
 
             Canvas canvas = getHolder().lockCanvas();
+
+            canvasHeight = canvas.getHeight();
             canvas.drawBitmap(background1.background, background1.x, background1.y, paint);
 
-            homeButton.draw(canvas);
+//            homeButton.draw(canvas);
             scoreBoard.draw(canvas);
+
+            //score
+            canvas.drawText("" + Ref.score, (canvas.getWidth() - scoreBoard.bitmapWidth) - 30, (scoreBoard.bitmapHeight / 2) + 15, scorePaint);//scorepaint
 
             if (!isCharacterRevolve) {
                 revolveAroundTheMountain(canvas);
@@ -145,7 +159,7 @@ public class Gameview extends SurfaceView implements Runnable {
             //coins
             coinY = coinY + coinSpeed;
             if (hitWithCoinsChecker(coinX, coinY)) {
-                Ref.score = Ref.score + 5;
+                Ref.score = Ref.score + 1;
                 Paper.book().write("score", Ref.score);
                 coinY = -100;
             }
@@ -166,14 +180,14 @@ public class Gameview extends SurfaceView implements Runnable {
                 treasureX = (int) Math.floor(Math.random() * (maxmanY - minmanY) + minmanY);
 
                 Ref.currentTreasureIndex = (Ref.currentTreasureIndex + 1) % treasure.treasure.length;  // Move to the next bitmap in a circular manner
-                Paper.book().write("counting", Ref.currentTreasureIndex);
+//                Paper.book().write("counting", Ref.currentTreasureIndex);
             }
             canvas.drawBitmap(treasure.treasure[Ref.currentTreasureIndex], treasureX, treasureY, null);
 
             lavaBoundry = canvas.getHeight() - background1.lavaHeight;
-            canvas.drawBitmap(background1.lava, background1.x, canvas.getHeight() - background1.lavaHeight, paint);
-            //score
-            canvas.drawText(getContext().getString(R.string.score) + Ref.score, (canvas.getWidth() - scoreBoard.bitmapWidth) /2, 60, scorePaint);//scorepaint
+
+            canvas.drawBitmap(background1.lava, background1.x, canvas.getHeight() - lavaHeight, paint);
+
             getHolder().unlockCanvasAndPost(canvas);
 
         }
@@ -298,6 +312,9 @@ public class Gameview extends SurfaceView implements Runnable {
         // You can use more specific logic based on your game requirements
 
         for (int i = 0; i < mountains.length; i++) {
+
+            //
+
             Rect projectileRect = new Rect((int) characterXPos, (int) characterYPos, (int) (characterXPos + character.width), (int) (characterYPos + character.height));
 
             Rect mountainRect = new Rect((int) mountains[i].x, (int) mountains[i].y, (int) (mountains[i].x + mountains[i].width), (int) (mountains[i].y + mountains[i].height));
@@ -398,22 +415,14 @@ public class Gameview extends SurfaceView implements Runnable {
     @Override
     public boolean onTouchEvent(MotionEvent event) {
 
-        float touchX = event.getX();
-        float touchY = event.getY();
-
-
-        // Handle taps within the home button (existing code)
-//        if (homeButton.onTouchEvent(event)) {
-//            Toast.makeText(getContext(), "hihihih", Toast.LENGTH_SHORT).show();
-//            return true;
-//        }
-
         // Handle outside taps here
         if (!isMovingCharacter) {
             isCharacterRevolve = true;
             isMovingCharacter = true;
             Ref.countForAchiev++;
             moveCharacTowardsTangent(event.getX(), event.getY());
+            // Limit lava height to canvas height
+
             angle = 0;
 
             // Return true to consume the event
@@ -424,15 +433,31 @@ public class Gameview extends SurfaceView implements Runnable {
         return false;
     }
 
+    private void expandLavaHeight(int expansionValue) {
+        // Set boundaries for lava height
+        lavaHeight = Math.min(lavaHeight + expansionValue, screenY);
+        // Ensure lavaHeight doesn't go below 0
+        lavaHeight = Math.max(lavaHeight, 0);
+    }
 
     private void moveCharacTowardsTangent(float targetX, float targetY) {
         new Thread(new Runnable() {
             @Override
             public void run() {
                 float speed = 30; // Adjust the speed here
+                collidingMountainIndex = getCollidingMountainIndex(); // Assuming this updates correctly
+                expandLavaHeight(5);
+// Use the correct colliding mountain index
+                float dx, dy;
+                if (collidingMountainIndex >= 0) {
+                    dx = characterXPos - mountains[collidingMountainIndex].x - mountains[collidingMountainIndex].width / 2;
+                    dy = characterYPos - mountains[collidingMountainIndex].y - mountains[collidingMountainIndex].height / 2;
+                } else {
+                    dx = characterXPos - mountains[0].x - mountains[0].width / 2;
+                    dy = characterYPos - mountains[0].y - mountains[0].height / 2;
+                }
                 // Calculate the tangent angle
-                float dx = characterXPos - mountains[0].x - mountains[0].width / 2;
-                float dy = characterYPos - mountains[0].y - mountains[0].height / 2;
+
                 float tangentAngle = (float) Math.atan2(dy, dx);
 
                 float moveX = (float) (speed * Math.cos(tangentAngle));

@@ -59,62 +59,16 @@ public class StoreActivity extends AppCompatActivity {
         if (Ref.character == 1) {
             binding.costBtn.setVisibility(View.GONE);
             binding.selectBtn1.setVisibility(View.GONE);
-            binding.selectBtn.setVisibility(View.VISIBLE);
+            binding.selectedBtn.setVisibility(View.VISIBLE);
         }
 
 //        selectButtonVisib();
         updateImageView();
-        binding.backBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                if (isSoundEnabled) {
-                    SoundsClass.playButtonClickSound(StoreActivity.this);
-                }
-//                if (Ref.isVibrateEnabled) {
-//                    VibrationEffect.VibrationEffect(StoreActivity.this);
-//                }
-                showPreviousImage();
-//              selectButtonVisib();
-            }
-        });
-
-        binding.nextBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-
-                if (isSoundEnabled) {
-                    SoundsClass.playButtonClickSound(StoreActivity.this);
-                }
-//                if (Ref.isVibrateEnabled) {
-//                    VibrationEffect.VibrationEffect(StoreActivity.this);
-//                }
-                showNextImage();
-
-//                selectButtonVisib();
-            }
-        });
-
-        binding.backScreenBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (isSoundEnabled) {
-                    SoundsClass.playButtonClickSound(StoreActivity.this);
-                }
-//                if (Ref.isVibrateEnabled) {
-//                    VibrationEffect.VibrationEffect(StoreActivity.this);
-//                }
-                finish();
-            }
-        });
 
         //cost btn
         binding.costBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-
                 if ((costOfCharacters[currentImageIndex]) <= (Ref.score)) {
                     Ref.score = Ref.score - costOfCharacters[currentImageIndex];
                     //
@@ -128,13 +82,9 @@ public class StoreActivity extends AppCompatActivity {
                     characterPurchased[currentImageIndex] = true; // Mark character as purchased
                     Paper.book().write("ch" + (currentImageIndex + 1), true);
 //                    saveCharThatbuy();
+                    selectCharacter(currentImageIndex);
+                    binding.scoreTxt.setText(String.valueOf(Ref.score));
                     Snackbar.make(view, R.string.buy, 1000).show();
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            finish();
-                        }
-                    }, 1500);
 
                 } else {
                     Snackbar.make(view, R.string.cant_buy, 1000).show();
@@ -152,10 +102,7 @@ public class StoreActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 //save in db
-                Ref.character = currentImageIndex + 1;
-                Log.d("TAGcc", "showPreviousImage: " + currentImageIndex);
-
-                Paper.book().write("character", Ref.character);
+                selectCharacter(currentImageIndex);
                 if (isSoundEnabled) {
                     SoundsClass.playButtonClickSound(StoreActivity.this);
                 }
@@ -163,13 +110,74 @@ public class StoreActivity extends AppCompatActivity {
             }
         });
         //selected btn
-        binding.selectBtn.setOnClickListener(new View.OnClickListener() {
+        binding.selectedBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
             }
         });
+        binding.backBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (isSoundEnabled) {
+                    SoundsClass.playButtonClickSound(StoreActivity.this);
+                }
+                showPreviousImage();
+//              selectButtonVisib();
+            }
+        });
+
+        binding.nextBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+
+                if (isSoundEnabled) {
+                    SoundsClass.playButtonClickSound(StoreActivity.this);
+                }
+                showNextImage();
+
+//                selectButtonVisib();
+            }
+        });
+
+        binding.backScreenBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (isSoundEnabled) {
+                    SoundsClass.playButtonClickSound(StoreActivity.this);
+                }
+                finish();
+            }
+        });
+
+
     }
+
+    private void selectCharacter(int selectedIndex) {
+        // Save the selected character in PaperDB
+        Ref.character = selectedIndex + 1;
+        Paper.book().write("character", Ref.character);
+        // Update the visibility of the selectBtn based on the selected character
+        updateSelectedCharacterButtonVisibility();
+        // Show a Snackbar or Toast to indicate that the character is selected
+        Snackbar.make(binding.getRoot(), R.string.selected, 1000).show();
+    }
+
+    private void updateSelectedCharacterButtonVisibility() {
+        // Check if selected character is the current one
+        boolean isSelectedCharacter = Ref.character == currentImageIndex + 1;
+
+        // Update button visibility based on purchase and selection
+        binding.selectedBtn.setVisibility(isSelectedCharacter ? View.VISIBLE : View.GONE);
+
+        binding.selectBtn1.setVisibility(!isSelectedCharacter &&
+                characterPurchased[currentImageIndex] ? View.VISIBLE : View.GONE);
+        binding.costBtn.setVisibility(!isSelectedCharacter && !characterPurchased[currentImageIndex]
+                ? View.VISIBLE : View.GONE);
+    }
+
 
     private void saveCharThatbuy() {
         if (Ref.character == 1) {
@@ -214,36 +222,36 @@ public class StoreActivity extends AppCompatActivity {
 
     private void selectButtonVisib() {
         if (Ref.character == 1) {
-            binding.selectBtn.setImageResource(R.drawable.selected_btn);
+            binding.selectedBtn.setImageResource(R.drawable.selected_btn);
         } else if (Ref.character == 2) {
-            binding.selectBtn.setImageResource(R.drawable.selected_btn);
+            binding.selectedBtn.setImageResource(R.drawable.selected_btn);
 
         } else if (Ref.character == 3) {
-            binding.selectBtn.setImageResource(R.drawable.selected_btn);
+            binding.selectedBtn.setImageResource(R.drawable.selected_btn);
 
         } else if (Ref.character == 4) {
-            binding.selectBtn.setImageResource(R.drawable.selected_btn);
+            binding.selectedBtn.setImageResource(R.drawable.selected_btn);
 
         } else if (Ref.character == 5) {
-            binding.selectBtn.setImageResource(R.drawable.selected_btn);
+            binding.selectedBtn.setImageResource(R.drawable.selected_btn);
 
         } else if (Ref.character == 6) {
-            binding.selectBtn.setImageResource(R.drawable.selected_btn);
+            binding.selectedBtn.setImageResource(R.drawable.selected_btn);
 
         } else if (Ref.character == 7) {
-            binding.selectBtn.setImageResource(R.drawable.selected_btn);
+            binding.selectedBtn.setImageResource(R.drawable.selected_btn);
 
         } else if (Ref.character == 8) {
-            binding.selectBtn.setImageResource(R.drawable.selected_btn);
+            binding.selectedBtn.setImageResource(R.drawable.selected_btn);
 
         } else if (Ref.character == 9) {
-            binding.selectBtn.setImageResource(R.drawable.selected_btn);
+            binding.selectedBtn.setImageResource(R.drawable.selected_btn);
 
         } else if (Ref.character == 10) {
-            binding.selectBtn.setImageResource(R.drawable.selected_btn);
+            binding.selectedBtn.setImageResource(R.drawable.selected_btn);
 
         } else if (Ref.character == 11) {
-            binding.selectBtn.setImageResource(R.drawable.selected_btn);
+            binding.selectedBtn.setImageResource(R.drawable.selected_btn);
 
         }
     }
@@ -252,10 +260,6 @@ public class StoreActivity extends AppCompatActivity {
 
         binding.largerImageView.setImageResource(images[currentImageIndex]);
         binding.costTxt.setText(String.valueOf(costOfCharacters[currentImageIndex]));
-        if (costOfCharacters[currentImageIndex] == 0) {
-            binding.costBtn.setVisibility(View.GONE);
-            binding.selectBtn1.setVisibility(View.VISIBLE);
-        }
 
         updateButtonVisibility();
     }
@@ -263,67 +267,67 @@ public class StoreActivity extends AppCompatActivity {
     private boolean updateCharacterBtnThatAreBuyAlready() {
 
         if (Ref.ch1) {
-            binding.selectBtn.setVisibility(View.GONE);
+            binding.selectedBtn.setVisibility(View.GONE);
             binding.costBtn.setVisibility(View.GONE);
             binding.selectBtn1.setVisibility(View.VISIBLE);
             return true;
         }
         if (Ref.ch2) {
-            binding.selectBtn.setVisibility(View.GONE);
+            binding.selectedBtn.setVisibility(View.GONE);
             binding.costBtn.setVisibility(View.GONE);
             binding.selectBtn1.setVisibility(View.VISIBLE);
             return true;
         }
         if (Ref.ch3) {
-            binding.selectBtn.setVisibility(View.GONE);
+            binding.selectedBtn.setVisibility(View.GONE);
             binding.costBtn.setVisibility(View.GONE);
             binding.selectBtn1.setVisibility(View.VISIBLE);
             return true;
         }
         if (Ref.ch4) {
-            binding.selectBtn.setVisibility(View.GONE);
+            binding.selectedBtn.setVisibility(View.GONE);
             binding.costBtn.setVisibility(View.GONE);
             binding.selectBtn1.setVisibility(View.VISIBLE);
             return true;
         }
         if (Ref.ch5) {
-            binding.selectBtn.setVisibility(View.GONE);
+            binding.selectedBtn.setVisibility(View.GONE);
             binding.costBtn.setVisibility(View.GONE);
             binding.selectBtn1.setVisibility(View.VISIBLE);
             return true;
         }
         if (Ref.ch6) {
-            binding.selectBtn.setVisibility(View.GONE);
+            binding.selectedBtn.setVisibility(View.GONE);
             binding.costBtn.setVisibility(View.GONE);
             binding.selectBtn1.setVisibility(View.VISIBLE);
             return true;
         }
         if (Ref.ch7) {
-            binding.selectBtn.setVisibility(View.GONE);
+            binding.selectedBtn.setVisibility(View.GONE);
             binding.costBtn.setVisibility(View.GONE);
             binding.selectBtn1.setVisibility(View.VISIBLE);
             return true;
         }
         if (Ref.ch8) {
-            binding.selectBtn.setVisibility(View.GONE);
+            binding.selectedBtn.setVisibility(View.GONE);
             binding.costBtn.setVisibility(View.GONE);
             binding.selectBtn1.setVisibility(View.VISIBLE);
             return true;
         }
         if (Ref.ch9) {
-            binding.selectBtn.setVisibility(View.GONE);
+            binding.selectedBtn.setVisibility(View.GONE);
             binding.costBtn.setVisibility(View.GONE);
             binding.selectBtn1.setVisibility(View.VISIBLE);
             return true;
         }
         if (Ref.ch10) {
-            binding.selectBtn.setVisibility(View.GONE);
+            binding.selectedBtn.setVisibility(View.GONE);
             binding.costBtn.setVisibility(View.GONE);
             binding.selectBtn1.setVisibility(View.VISIBLE);
             return true;
         }
         if (Ref.ch11) {
-            binding.selectBtn.setVisibility(View.GONE);
+            binding.selectedBtn.setVisibility(View.GONE);
             binding.costBtn.setVisibility(View.GONE);
             binding.selectBtn1.setVisibility(View.VISIBLE);
             return true;
@@ -352,25 +356,21 @@ public class StoreActivity extends AppCompatActivity {
 
             currentImageIndex--;
             updateImageView();
-            if (characterPurchased[currentImageIndex]) {
-                binding.costBtn.setVisibility(View.GONE);
-                binding.selectBtn1.setVisibility(View.VISIBLE);
-                binding.selectBtn.setVisibility(View.GONE);
-            } else if (characterPurchased[currentImageIndex] == false) {
-                binding.costBtn.setVisibility(View.VISIBLE);
-                binding.selectBtn1.setVisibility(View.GONE);
-                binding.selectBtn.setVisibility(View.GONE);
-            }
 
-            if (costOfCharacters[currentImageIndex] == 0) {
-                binding.costBtn.setVisibility(View.GONE);
-                binding.selectBtn1.setVisibility(View.VISIBLE);
-                binding.selectBtn.setVisibility(View.GONE);
-            }
-//            updateCharacterBtnThatAreBuyAlready();
-//            changeCostBtnIntoSelectedBtn();
-//            updateCharacterBtnThatAreBuyAlready();
             Log.d("TAGcc", "showPreviousImage: " + currentImageIndex);
+            updateSelectedCharacterButtonVisibility();
+            if (costOfCharacters[currentImageIndex] == 0) {
+                if (Ref.character == 1) {
+                    binding.costBtn.setVisibility(View.GONE);
+                    binding.selectBtn1.setVisibility(View.GONE);
+                    binding.selectedBtn.setVisibility(View.VISIBLE);
+                } else {
+                    binding.costBtn.setVisibility(View.GONE);
+                    binding.selectBtn1.setVisibility(View.VISIBLE);
+                    binding.selectedBtn.setVisibility(View.GONE);
+                }
+
+            }
         }
     }
 
@@ -379,19 +379,16 @@ public class StoreActivity extends AppCompatActivity {
 
             currentImageIndex++;
             updateImageView();
-            if (characterPurchased[currentImageIndex]) {
-                binding.costBtn.setVisibility(View.GONE);
-                binding.selectBtn1.setVisibility(View.VISIBLE);
-                binding.selectBtn.setVisibility(View.GONE);
-            } else if (characterPurchased[currentImageIndex] == false) {
-                binding.costBtn.setVisibility(View.VISIBLE);
-                binding.selectBtn1.setVisibility(View.GONE);
-                binding.selectBtn.setVisibility(View.GONE);
-            }
-//            updateCharacterBtnThatAreBuyAlready();
-//            changeCostBtnIntoSelectedBtn();
-//            updateCharacterBtnThatAreBuyAlready();
-
+//            if (characterPurchased[currentImageIndex]) {
+//                binding.costBtn.setVisibility(View.GONE);
+//                binding.selectBtn1.setVisibility(View.VISIBLE);
+//                binding.selectedBtn.setVisibility(View.GONE);
+//            } else if (characterPurchased[currentImageIndex] == false) {
+//                binding.costBtn.setVisibility(View.VISIBLE);
+//                binding.selectBtn1.setVisibility(View.GONE);
+//                binding.selectedBtn.setVisibility(View.GONE);
+//            }
+            updateSelectedCharacterButtonVisibility();
 
         }
     }
@@ -401,11 +398,11 @@ public class StoreActivity extends AppCompatActivity {
 
             binding.costBtn.setVisibility(View.GONE);
             binding.selectBtn1.setVisibility(View.GONE);
-            binding.selectBtn.setVisibility(View.VISIBLE);
+            binding.selectedBtn.setVisibility(View.VISIBLE);
         } else {
 
             binding.costBtn.setVisibility(View.VISIBLE);
-            binding.selectBtn.setVisibility(View.GONE);
+            binding.selectedBtn.setVisibility(View.GONE);
             binding.selectBtn1.setVisibility(View.GONE);
 
 

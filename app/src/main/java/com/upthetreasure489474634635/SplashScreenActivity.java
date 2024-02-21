@@ -57,9 +57,6 @@ public class SplashScreenActivity extends AppCompatActivity {
         if ((Paper.book().read("character")) != null) {
             Ref.character = (Paper.book().read("character"));
         }
-        if ((Paper.book().read("counting")) != null) {
-            Ref.currentTreasureIndex = (Paper.book().read("counting"));
-        }
 
         if ((Paper.book().read("score")) != null) {
             Ref.score = (Paper.book().read("score"));
