@@ -23,7 +23,7 @@ public class BgMusicService extends Service implements AudioManager.OnAudioFocus
     public void onCreate() {
         super.onCreate();
         // Initialize and set up the MediaPlayer
-//        mediaPlayer = MediaPlayer.create(this, R.raw.vopna_bg);
+        mediaPlayer = MediaPlayer.create(this, R.raw.mixkitround);
         mediaPlayer.setLooping(true); // To enable looping
 
         audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);

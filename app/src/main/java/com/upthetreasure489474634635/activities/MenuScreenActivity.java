@@ -27,7 +27,7 @@ public class MenuScreenActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         //
-//        bgMusicService();
+        bgMusicService();
         //
         binding.playBtn.setOnClickListener(new View.OnClickListener() {
             @Override
