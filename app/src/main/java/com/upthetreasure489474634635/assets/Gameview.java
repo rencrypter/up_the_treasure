@@ -25,6 +25,9 @@ import com.upthetreasure489474634635.VibrationEffect;
 import com.upthetreasure489474634635.activities.GameOverActivity;
 import com.upthetreasure489474634635.activities.MenuScreenActivity;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Random;
 
 import io.paperdb.Paper;
@@ -38,7 +41,7 @@ public class Gameview extends SurfaceView implements Runnable {
     public float angle = 0;
     float tangentAngle;
 
-    boolean isPlaying = false, isMovingCharacter = false, isCharacterRevolve = false, isCharacterShoot = false;
+    public static boolean isPlaying = false, isMovingCharacter = false, isCharacterRevolve = false, isCharacterShoot = false;
     //
     private Background background1, dummyLava;
     private CharacterMan character;
@@ -59,6 +62,11 @@ public class Gameview extends SurfaceView implements Runnable {
     private Paint scorePaint = new Paint();
 
     //coins
+    // Assuming you have these lists to keep track of coin positions
+    private List<Integer> coinXPositions = new ArrayList<>();
+    private List<Integer> coinYPositions = new ArrayList<>();
+    private static final int MAX_COINS_ON_SCREEN = 5;
+    Coin[] coinss = new Coin[3];
     Bitmap coinDrawable;
     private int coinX, coinY;
     private int coinSpeed = 10;
@@ -106,15 +114,15 @@ public class Gameview extends SurfaceView implements Runnable {
         paint.setColor(Color.WHITE);
 
         //mountains
-        mountains = new Mountains[5];
+        mountains = new Mountains[6];
 
         //
         lavaHeight = background1.lavaHeight;
 
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < 6; i++) {
             mountains[i] = new Mountains(getResources());
             mountains[i].x = screenX / 2 - mountains[i].width / 2;
-            mountains[i].y = (i + 1) * ScreenY / (5 + 1); // Initial positions above screen// 5 is the max mountains
+            mountains[i].y = (i + 1) * ScreenY / (6 + 1); // Initial positions above screen// 5 is the max mountains
         }
         //coins
         coinDrawable = BitmapFactory.decodeResource(getResources(), R.drawable.coin);
@@ -164,18 +172,49 @@ public class Gameview extends SurfaceView implements Runnable {
             int minmanY = character.height;
             int maxmanY = canvas.getHeight() - character.height;
             //coins
-            coinY = coinY + coinSpeed;
-            if (hitWithCoinsChecker(coinX, coinY)) {
-                coins = coins + 1;
-                Ref.score = Ref.score + 1;
-                Paper.book().write("score", Ref.score);
-                coinY = -100;
+
+            if (coinss[0] == null) {
+                for (int i = 0; i < coinss.length; i++) {
+                    coinss[i] = new Coin(getResources(),(int) Math.floor(Math.random() * (maxmanY - minmanY) + minmanY), 0);
+                }
             }
-            if (coinY > canvas.getHeight()) {
-                coinY = 0;
-                coinX = (int) Math.floor(Math.random() * (maxmanY - minmanY) + minmanY);
+
+            for (int i = 0; i < coinss.length; i++) {
+                if (coinss[i].isActive()) {
+                    coinss[i].updatePosition(coinSpeed);
+
+                    if (hitWithCoinsChecker(coinss[i].getX(), coinss[i].getY())) {
+                        coinss[i].deactivate();
+                        coins = coins + 1;
+                        Ref.score = Ref.score + 1;
+                        Paper.book().write("score", Ref.score);
+                        coinY = -100;
+                    }
+
+                    if (coinss[i].getY() > canvasHeight) {
+                        coinss[i].resetPosition((int) Math.floor(Math.random() * (maxmanY - minmanY) + minmanY));
+                    }
+
+                    canvas.drawBitmap(coinDrawable, coinss[i].getX(), coinss[i].getY(), null);
+                }
             }
-            canvas.drawBitmap(coinDrawable, coinX, coinY, null);
+//            coinY = coinY + coinSpeed;
+//            if (hitWithCoinsChecker(coinX, coinY)) {
+//                coins = coins + 1;
+//                Ref.score = Ref.score + 1;
+//                Paper.book().write("score", Ref.score);
+//                coinY = -100;
+//            }
+//
+//            for (int i = 0; i < MAX_COINS_ON_SCREEN; i++) {
+//                if (coinY > canvas.getHeight()) {
+//                    coinY = 0;
+//                    coinX = (int) Math.floor(Math.random() * (maxmanY - minmanY) + minmanY);
+//                }
+//            }
+//
+//            canvas.drawBitmap(coinDrawable, coinX, coinY, null);
+
 
             //treasure
             treasureY = treasureY + treasureSpeed;
@@ -202,6 +241,52 @@ public class Gameview extends SurfaceView implements Runnable {
             drawLava(canvas);
 
             getHolder().unlockCanvasAndPost(canvas);
+
+        }
+    }
+
+    private void moveAndDrawCoins(Canvas canvas) {
+        Iterator<Integer> xIterator = coinXPositions.iterator();
+        Iterator<Integer> yIterator = coinYPositions.iterator();
+
+        while (xIterator.hasNext() && yIterator.hasNext()) {
+            int coinX = xIterator.next();
+            int coinY = yIterator.next();
+
+            coinY += coinSpeed;
+
+            if (hitWithCoinsChecker(coinX, coinY)) {
+                coins = coins + 1;
+                Ref.score = Ref.score + 1;
+                Paper.book().write("score", Ref.score);
+
+                coinY = -100;
+                // Remove the collected coin by skipping the current iteration
+                continue;
+            }
+
+            if (coinY > canvas.getHeight()) {
+                // Remove coins that have gone off-screen
+                xIterator.remove();
+                yIterator.remove();
+            }
+            canvas.drawBitmap(coinDrawable, coinX, coinY, null);
+
+        }
+    }
+
+    private void spawnCoins(Canvas canvas) {
+        int minmanY = character.height;
+        int maxmanY = canvas.getHeight() - character.height;
+
+        for (int i = 0; i < MAX_COINS_ON_SCREEN; i++) {
+            if (coinY > canvas.getHeight()) {
+                coinY = 0;
+                coinX = (int) Math.floor(Math.random() * (maxmanY - minmanY) + minmanY);
+                coinXPositions.add(coinX);
+                coinYPositions.add(coinY);
+            }
+
 
         }
     }
@@ -341,7 +426,7 @@ public class Gameview extends SurfaceView implements Runnable {
             timeElapsed = 0.0f;
         }
 
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < 6; i++) {
             mountains[i].y += mountains[i].speed;
 
             if (mountains[i].y > screenY) { // Change the condition to check if it's off the bottom

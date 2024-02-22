@@ -23,7 +23,7 @@ import com.upthetreasure489474634635.SoundsClass;
 import com.upthetreasure489474634635.assets.Gameview;
 import com.upthetreasure489474634635.services.BgMusicService;
 
-import io.paperdb.Paper;
+//import io.paperdb.Paper;
 
 public class GameplayActivity extends AppCompatActivity {
 
@@ -74,13 +74,14 @@ public class GameplayActivity extends AppCompatActivity {
                     // If drawable is changed, set it back to the initial state
                     playPauseBtn.setBackgroundResource(R.drawable.ic_play_btn);
                     isPlayPauseBtn = false;
+                    Gameview.isMovingCharacter = true;
                     gameview.pause();
 
                 } else {
                     // If drawable is not changed, set it to the new drawable
                     playPauseBtn.setBackgroundResource(R.drawable.ic_pause_btn);
                     isPlayPauseBtn = true;
-
+                    Gameview.isMovingCharacter = false;
                     gameview.resume();
                 }
             }

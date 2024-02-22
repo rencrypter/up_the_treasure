@@ -8,7 +8,7 @@ import android.graphics.Rect;
 import com.upthetreasure489474634635.R;
 
 public class Mountains {
-    Bitmap mountain1, mountain2, mountain3, mountain4, mountain5;
+    Bitmap mountain1, mountain2, mountain3, mountain4, mountain5, mountain6;
     int x = 0, y, width, height, mountainCounter = 1;
 
     int speed = 3;
@@ -19,6 +19,8 @@ public class Mountains {
         mountain3 = BitmapFactory.decodeResource(res, R.drawable.tile);
         mountain4 = BitmapFactory.decodeResource(res, R.drawable.tile);
         mountain5 = BitmapFactory.decodeResource(res, R.drawable.tile);
+        mountain6 = BitmapFactory.decodeResource(res, R.drawable.tile);
+
 
         //
         width = mountain1.getWidth();
@@ -29,6 +31,8 @@ public class Mountains {
         mountain3 = Bitmap.createScaledBitmap(mountain3, width, height, false);
         mountain4 = Bitmap.createScaledBitmap(mountain4, width, height, false);
         mountain5 = Bitmap.createScaledBitmap(mountain5, width, height, false);
+        mountain6 = Bitmap.createScaledBitmap(mountain5, width, height, false);
+
 
         //
         y = -height;
@@ -54,11 +58,14 @@ public class Mountains {
         if (mountainCounter == 4) {
             mountainCounter++;
             return mountain4;
+        }  if (mountainCounter == 5) {
+            mountainCounter++;
+            return mountain5;
         }
 
         mountainCounter = 1;
 
-        return mountain5;
+        return mountain6;
     }
 
     Rect getCollisionShape() {

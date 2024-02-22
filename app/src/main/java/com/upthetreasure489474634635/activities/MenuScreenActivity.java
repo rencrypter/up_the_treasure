@@ -44,7 +44,7 @@ public class MenuScreenActivity extends AppCompatActivity {
                     BgMusicService.onResume();
                 }
             }
-        }, 500);
+        }, 100);
 
 
     }
