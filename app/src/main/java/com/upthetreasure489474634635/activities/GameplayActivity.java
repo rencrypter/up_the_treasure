@@ -1,7 +1,9 @@
 package com.upthetreasure489474634635.activities;
 
 import static com.upthetreasure489474634635.Ref.isSoundEnabled;
+import static com.upthetreasure489474634635.SplashScreenActivity.isMyServiceRunning;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -16,6 +18,8 @@ import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import com.upthetreasure489474634635.R;
+import com.upthetreasure489474634635.Ref;
+import com.upthetreasure489474634635.SoundsClass;
 import com.upthetreasure489474634635.assets.Gameview;
 import com.upthetreasure489474634635.services.BgMusicService;
 
@@ -53,12 +57,19 @@ public class GameplayActivity extends AppCompatActivity {
         homeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (isSoundEnabled) {
+                    SoundsClass.playGameplayButtonClickSound(GameplayActivity.this);
+                }
+                startActivity(new Intent(GameplayActivity.this, MenuScreenActivity.class));
                 finish();
             }
         });
         playPauseBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (isSoundEnabled) {
+                    SoundsClass.playGameplayButtonClickSound(GameplayActivity.this);
+                }
                 if (isPlayPauseBtn) {
                     // If drawable is changed, set it back to the initial state
                     playPauseBtn.setBackgroundResource(R.drawable.ic_play_btn);
@@ -101,6 +112,14 @@ public class GameplayActivity extends AppCompatActivity {
 
         //
 
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                // Back is pressed... Finishing the activity
+                startActivity(new Intent(GameplayActivity.this, MenuScreenActivity.class));
+                finish();
+            }
+        });
     }
 
     //
@@ -108,12 +127,17 @@ public class GameplayActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         gameview.pause();
-
+        if (isMyServiceRunning(BgMusicService.class, GameplayActivity.this)) {
+            BgMusicService.onPause();
+        }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         gameview.resume();
+        if (isMyServiceRunning(BgMusicService.class, GameplayActivity.this)) {
+            BgMusicService.onResume();
+        }
     }
 }

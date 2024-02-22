@@ -45,6 +45,9 @@ public class SplashScreenActivity extends AppCompatActivity {
         if ((Paper.book().read("lang")) != null) {
             Ref.lang = Paper.book().read("lang");
 
+            if ((Paper.book().read("currentlang")) != null) {
+                Ref.currentIndex = Paper.book().read("currentlang");
+            }
             loadLanguage();
         }
         //
@@ -58,14 +61,10 @@ public class SplashScreenActivity extends AppCompatActivity {
             Ref.character = (Paper.book().read("character"));
         }
 
-        if ((Paper.book().read("score")) != null) {
-            Ref.score = (Paper.book().read("score"));
-        }
-        updateCharacterBtnThatAreBuyAlready();
-        achieveLoadFromDb();
+
     }
 
-    private void updateCharacterBtnThatAreBuyAlready() {
+    public static void updateCharacterBtnThatAreBuyAlready() {
         if ((Paper.book().read("ch1")) != null) {
             Ref.ch1 = (Paper.book().read("ch1"));
         }
@@ -111,7 +110,7 @@ public class SplashScreenActivity extends AppCompatActivity {
         }
     }
 
-    private void achieveLoadFromDb() {
+    public static void achieveLoadFromDb() {
         if (Paper.book().read("achi1") != null) {
             Ref.achi1 = Paper.book().read("achi1");
         }

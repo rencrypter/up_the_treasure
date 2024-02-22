@@ -1,6 +1,7 @@
 package com.upthetreasure489474634635.activities;
 
 import static com.upthetreasure489474634635.Ref.isSoundEnabled;
+import static com.upthetreasure489474634635.SplashScreenActivity.isMyServiceRunning;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -16,6 +17,7 @@ import com.upthetreasure489474634635.Ref;
 import com.upthetreasure489474634635.SoundsClass;
 import com.upthetreasure489474634635.VibrationEffect;
 import com.upthetreasure489474634635.databinding.ActivityStoreBinding;
+import com.upthetreasure489474634635.services.BgMusicService;
 
 import io.paperdb.Paper;
 
@@ -35,6 +37,23 @@ public class StoreActivity extends AppCompatActivity {
 
     private boolean[] characterPurchased = new boolean[costOfCharacters.length]; // Track purchased characters
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (isMyServiceRunning(BgMusicService.class, StoreActivity.this)) {
+            BgMusicService.onPause();
+        }
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (isMyServiceRunning(BgMusicService.class, StoreActivity.this)) {
+            BgMusicService.onResume();
+        }
+
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,10 +75,16 @@ public class StoreActivity extends AppCompatActivity {
             }
         }
         //
-        if (Ref.character == 1) {
+
+        if(costOfCharacters[currentImageIndex] == 0){
             binding.costBtn.setVisibility(View.GONE);
-            binding.selectBtn1.setVisibility(View.GONE);
-            binding.selectedBtn.setVisibility(View.VISIBLE);
+            binding.selectBtn1.setVisibility(View.VISIBLE);
+            binding.selectedBtn.setVisibility(View.GONE);
+            if (Ref.character == 1) {
+                binding.costBtn.setVisibility(View.GONE);
+                binding.selectBtn1.setVisibility(View.GONE);
+                binding.selectedBtn.setVisibility(View.VISIBLE);
+            }
         }
 
 //        selectButtonVisib();
@@ -121,7 +146,7 @@ public class StoreActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 if (isSoundEnabled) {
-                    SoundsClass.playButtonClickSound(StoreActivity.this);
+                    SoundsClass.playNextPrevButtonClickSound(StoreActivity.this);
                 }
                 showPreviousImage();
 //              selectButtonVisib();
@@ -134,7 +159,7 @@ public class StoreActivity extends AppCompatActivity {
 
 
                 if (isSoundEnabled) {
-                    SoundsClass.playButtonClickSound(StoreActivity.this);
+                    SoundsClass.playNextPrevButtonClickSound(StoreActivity.this);
                 }
                 showNextImage();
 

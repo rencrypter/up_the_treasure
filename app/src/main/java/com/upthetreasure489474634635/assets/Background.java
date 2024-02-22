@@ -8,10 +8,10 @@ import com.upthetreasure489474634635.R;
 
 public class Background {
 
-    Bitmap background, lava;
+    Bitmap background, lava, lavaDummy;
 
     int x = 0, y = 0;
-    int lavaHeight;
+    int lavaHeight, lavaDummyHeight;
 
     Background(int screenX, int screenY, Resources res) {
 
@@ -21,6 +21,11 @@ public class Background {
         lava = BitmapFactory.decodeResource(res, R.drawable.ic_lawa_draw);
         lavaHeight = lava.getHeight();
         lava = Bitmap.createScaledBitmap(lava, lava.getWidth(), lavaHeight, false);
+
+        //lava dummy
+        lavaDummy = BitmapFactory.decodeResource(res, R.drawable.ic_lawa_draw);
+        lavaDummyHeight = lavaDummy.getHeight();
+        lavaDummy = Bitmap.createScaledBitmap(lavaDummy, lavaDummy.getWidth(), lavaDummyHeight, false);
 
     }
 }

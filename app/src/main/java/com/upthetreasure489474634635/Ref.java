@@ -8,7 +8,7 @@ public class Ref {
     //
     public static int countForAchiev = 1;
     public static int currentTreasureIndex = 0;
-    public static int currentIndex = 0;
+    public static int currentIndex = 1;
     public static int score = 0;
     public static boolean isSoundEnabled = true;
     public static boolean isVibrateEnabled = true;
@@ -39,4 +39,19 @@ public class Ref {
     public static boolean achi10 = false;
     public static boolean achi11 = false;
     public static boolean achi12 = false;
+
+//    runtim achie
+
+    public static boolean achiToShow1 = false;
+    public static boolean achiToShow2 = false;
+    public static boolean achiToShow3 = false;
+    public static boolean achiToShow4 = false;
+    public static boolean achiToShow5 = false;
+    public static boolean achiToShow6 = false;
+    public static boolean achiToShow7 = false;
+    public static boolean achiToShow8 = false;
+    public static boolean achiToShow9 = false;
+    public static boolean achiToShow10 = false;
+    public static boolean achiToShow11 = false;
+    public static boolean achiToShow12 = false;
 }

@@ -4,6 +4,7 @@ import static com.upthetreasure489474634635.Ref.currentIndex;
 
 import static com.upthetreasure489474634635.Ref.isSoundEnabled;
 import static com.upthetreasure489474634635.Ref.isVibrateEnabled;
+import static com.upthetreasure489474634635.SplashScreenActivity.isMyServiceRunning;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
@@ -34,7 +35,23 @@ public class SettingsActivity extends AppCompatActivity {
     //
     private int[] drawableIds = {R.drawable.lang_en_btn, R.drawable.lang_pt_btn, R.drawable.lang_ru_btn};
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (isMyServiceRunning(BgMusicService.class, SettingsActivity.this)) {
+            BgMusicService.onPause();
+        }
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (isMyServiceRunning(BgMusicService.class, SettingsActivity.this)) {
+            BgMusicService.onResume();
+        }
+
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -101,9 +118,7 @@ public class SettingsActivity extends AppCompatActivity {
                 if (isSoundEnabled) {
                     SoundsClass.playButtonClickSound(SettingsActivity.this);
                 }
-//                if(Ref.isVibrateEnabled){
-//                    VibrationEffect.VibrationEffect(SettingsActivity.this);
-//                }
+
                 startActivity(new Intent(SettingsActivity.this, MenuScreenActivity.class));
                 finish();
             }
@@ -115,15 +130,19 @@ public class SettingsActivity extends AppCompatActivity {
                 if (isSoundEnabled) {
                     SoundsClass.playButtonClickSound(SettingsActivity.this);
                 }
-//                if(Ref.isVibrateEnabled){
-//                    VibrationEffect.VibrationEffect(SettingsActivity.this);
-//                }
                 // Change the image to the next one in the cycle
                 binding.langBtn.setImageResource(drawableIds[currentIndex]);
 
                 // Increment the index for the next click
                 currentIndex = (currentIndex + 1) % drawableIds.length;
-                if (currentIndex == 1) {
+
+                if (currentIndex == 0) {
+                    Ref.lang = 0;
+                    Paper.book().write("lang", Ref.lang);
+                    changeLanguageApp("ru", SettingsActivity.this);
+                    finish();
+                    startActivity(getIntent());
+                }else if (currentIndex == 1) {
                     Ref.lang = 1;
                     Paper.book().write("lang", Ref.lang);
                     changeLanguageApp("en", SettingsActivity.this);
@@ -135,14 +154,9 @@ public class SettingsActivity extends AppCompatActivity {
                     changeLanguageApp("pt", SettingsActivity.this);
                     finish();
                     startActivity(getIntent());
-                } else if (currentIndex == 0) {
-                    Ref.lang = 0;
-                    Paper.book().write("lang", Ref.lang);
-                    changeLanguageApp("ru", SettingsActivity.this);
-                    finish();
-                    startActivity(getIntent());
                 }
 
+                Paper.book().write("currentlang", currentIndex);
 
             }
 

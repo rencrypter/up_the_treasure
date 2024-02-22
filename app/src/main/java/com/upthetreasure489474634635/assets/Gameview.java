@@ -8,10 +8,12 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.graphics.Path;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.os.Handler;
 import android.os.SystemClock;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceView;
 import android.widget.Button;
@@ -34,10 +36,11 @@ public class Gameview extends SurfaceView implements Runnable {
     int lavaBoundry;
     public static float screenRatioX, screenRatioY;
     public float angle = 0;
+    float tangentAngle;
 
     boolean isPlaying = false, isMovingCharacter = false, isCharacterRevolve = false, isCharacterShoot = false;
     //
-    private Background background1;
+    private Background background1, dummyLava;
     private CharacterMan character;
     private Mountains[] mountains;
 
@@ -66,10 +69,16 @@ public class Gameview extends SurfaceView implements Runnable {
     float characterXPos, characterYPos;
     private int collidingMountainIndex = 0;
 
+    private float timeElapsed = 0.0f;
+    private float damping = 0.9f;
+    private float previousOffset = 0.0f;
     private int lavaHeight = 0; // Initial lava height (adjust as needed)
     private int lavaIncrement = 5; // Amount to increase lava height per tap
 
     int canvasHeight = 0;
+
+    public static int coins = 0;
+
 
     public Gameview(Context context, int ScreenX, int ScreenY) {
         super(context);
@@ -83,6 +92,7 @@ public class Gameview extends SurfaceView implements Runnable {
         screenRatioX = 1920f / screenX;
         screenRatioY = 1080f / screenY;
 
+        dummyLava = new Background(screenX, screenY, getResources());
         background1 = new Background(screenX, screenY, getResources());
 //        homeButton = new HomeButton(getContext(), getResources());
         scoreBoard = new ScoreBoard(getContext(), getResources(), screenX, screenY);
@@ -139,10 +149,7 @@ public class Gameview extends SurfaceView implements Runnable {
             canvas.drawBitmap(background1.background, background1.x, background1.y, paint);
 
 //            homeButton.draw(canvas);
-            scoreBoard.draw(canvas);
 
-            //score
-            canvas.drawText("" + Ref.score, (canvas.getWidth() - scoreBoard.bitmapWidth) - 30, (scoreBoard.bitmapHeight / 2) + 15, scorePaint);//scorepaint
 
             if (!isCharacterRevolve) {
                 revolveAroundTheMountain(canvas);
@@ -159,6 +166,7 @@ public class Gameview extends SurfaceView implements Runnable {
             //coins
             coinY = coinY + coinSpeed;
             if (hitWithCoinsChecker(coinX, coinY)) {
+                coins = coins + 1;
                 Ref.score = Ref.score + 1;
                 Paper.book().write("score", Ref.score);
                 coinY = -100;
@@ -183,14 +191,40 @@ public class Gameview extends SurfaceView implements Runnable {
 //                Paper.book().write("counting", Ref.currentTreasureIndex);
             }
             canvas.drawBitmap(treasure.treasure[Ref.currentTreasureIndex], treasureX, treasureY, null);
+            //
+            scoreBoard.draw(canvas);
+            //score
+            canvas.drawText("" + coins, (canvas.getWidth() - scoreBoard.bitmapWidth) - 30, (scoreBoard.bitmapHeight / 2) + 15, scorePaint);//scorepaint
 
             lavaBoundry = canvas.getHeight() - background1.lavaHeight;
+            canvas.drawBitmap(background1.lavaDummy, background1.x, canvas.getHeight() - dummyLava.lavaDummyHeight, paint);
 
-            canvas.drawBitmap(background1.lava, background1.x, canvas.getHeight() - lavaHeight, paint);
+            drawLava(canvas);
 
             getHolder().unlockCanvasAndPost(canvas);
 
         }
+    }
+
+
+    private void drawLava(Canvas canvas) {
+        float offsetY = seesawOffset(timeElapsed);
+
+        // Calculate the effective Y position for the bitmap based on offset
+//        float effectiveY = canvasHeight - lavaHeight + offsetY;
+
+        // Draw the lava bitmap with the Y offset
+        float originalY = canvasHeight - lavaHeight;
+        canvas.drawBitmap(background1.lava, background1.x, originalY + offsetY, paint);
+    }
+
+    private float seesawOffset(float time) {
+        float frequency = 0.005f; // Increased for faster speed
+        float amplitude = 20.0f;
+        float newOffset = amplitude * (float) Math.cos(frequency * time);
+        float dampedOffset = previousOffset + (newOffset - previousOffset) * damping;
+        previousOffset = dampedOffset;
+        return dampedOffset;
     }
 
 
@@ -200,50 +234,62 @@ public class Gameview extends SurfaceView implements Runnable {
         if (Ref.currentTreasureIndex == 0) {
 
             Ref.achi1 = true;
+            Ref.achiToShow1 = true;
             Paper.book().write("achi1", Ref.achi1);
         } else if (Ref.currentTreasureIndex == 1) {
 
             Ref.achi2 = true;
+            Ref.achiToShow2 = true;
             Paper.book().write("achi2", Ref.achi2);
         } else if (Ref.currentTreasureIndex == 2) {
 
             Ref.achi3 = true;
+            Ref.achiToShow3 = true;
             Paper.book().write("achi3", Ref.achi3);
         } else if (Ref.currentTreasureIndex == 3) {
 
             Ref.achi4 = true;
+            Ref.achiToShow4 = true;
             Paper.book().write("achi4", Ref.achi4);
         } else if (Ref.currentTreasureIndex == 4) {
 
             Ref.achi5 = true;
+            Ref.achiToShow5 = true;
             Paper.book().write("achi5", Ref.achi5);
         } else if (Ref.currentTreasureIndex == 5) {
 
             Ref.achi6 = true;
+            Ref.achiToShow6 = true;
             Paper.book().write("achi6", Ref.achi6);
         } else if (Ref.currentTreasureIndex == 6) {
 
             Ref.achi7 = true;
+            Ref.achiToShow7 = true;
             Paper.book().write("achi7", Ref.achi7);
         } else if (Ref.currentTreasureIndex == 7) {
 
             Ref.achi8 = true;
+            Ref.achiToShow8 = true;
             Paper.book().write("achi8", Ref.achi8);
         } else if (Ref.currentTreasureIndex == 8) {
 
             Ref.achi9 = true;
+            Ref.achiToShow9 = true;
             Paper.book().write("achi9", Ref.achi9);
         } else if (Ref.currentTreasureIndex == 9) {
 
             Ref.achi10 = true;
+            Ref.achiToShow10 = true;
             Paper.book().write("achi10", Ref.achi10);
         } else if (Ref.currentTreasureIndex == 10) {
 
             Ref.achi11 = true;
+            Ref.achiToShow11 = true;
             Paper.book().write("achi11", Ref.achi11);
         } else if (Ref.currentTreasureIndex == 11) {
 
             Ref.achi12 = true;
+            Ref.achiToShow12 = true;
             Paper.book().write("achi12", Ref.achi12);
         }
 
@@ -288,6 +334,13 @@ public class Gameview extends SurfaceView implements Runnable {
 
     private void update() {
 
+        // Increment timeElapsed to drive the animation
+        timeElapsed += 16; // 16 milliseconds per frame
+        if (timeElapsed > 1000000) {
+            // Reset timeElapsed to avoid overflow (adjust as needed)
+            timeElapsed = 0.0f;
+        }
+
         for (int i = 0; i < 5; i++) {
             mountains[i].y += mountains[i].speed;
 
@@ -298,14 +351,26 @@ public class Gameview extends SurfaceView implements Runnable {
         }
 
 
-        //
-        // Check if the character is out of bounds
-        if (characterXPos < 0 || characterXPos > screenX || characterYPos < 0 || characterYPos > screenY || characterYPos > lavaBoundry) {
+        // Check for lava collision after drawing and updating
+        if (checkLavaCollision()) {
             gameOver();
         }
 
 
     }
+
+    private boolean checkLavaCollision() {
+        Rect characterRect = new Rect((int) characterXPos, (int) characterYPos,
+                (int) (characterXPos + character.width), (int) (characterYPos + character.height));
+        Rect lavaRect = new Rect(0, canvasHeight - lavaHeight, screenX, canvasHeight);
+
+        if (Rect.intersects(characterRect, lavaRect)) {
+            return true;
+        }
+
+        return false; // No collision
+    }
+
 
     private int getCollidingMountainIndex() {
         // Find the index of the mountain with which the projectile collides
@@ -385,7 +450,7 @@ public class Gameview extends SurfaceView implements Runnable {
 
     private void sleep() {
         try {
-            Thread.sleep(20);
+            Thread.sleep(16);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
@@ -417,6 +482,7 @@ public class Gameview extends SurfaceView implements Runnable {
 
         // Handle outside taps here
         if (!isMovingCharacter) {
+            expandLavaHeight(15);
             isCharacterRevolve = true;
             isMovingCharacter = true;
             Ref.countForAchiev++;
@@ -446,7 +512,7 @@ public class Gameview extends SurfaceView implements Runnable {
             public void run() {
                 float speed = 30; // Adjust the speed here
                 collidingMountainIndex = getCollidingMountainIndex(); // Assuming this updates correctly
-                expandLavaHeight(5);
+
 // Use the correct colliding mountain index
                 float dx, dy;
                 if (collidingMountainIndex >= 0) {
@@ -458,8 +524,8 @@ public class Gameview extends SurfaceView implements Runnable {
                 }
                 // Calculate the tangent angle
 
-                float tangentAngle = (float) Math.atan2(dy, dx);
-
+                tangentAngle = (float) Math.atan2(dy, dx);
+//                Log.d("TAGtan", "run: "+tangentAngle);
                 float moveX = (float) (speed * Math.cos(tangentAngle));
                 float moveY = (float) (speed * Math.sin(tangentAngle));
 
@@ -470,26 +536,89 @@ public class Gameview extends SurfaceView implements Runnable {
 
                     if (getCollidingMountainIndex() != collidingMountainIndex) {
                         if (checkProjectileMountainCollision()) {
+                            expandLavaHeight(-15);
                             // Collision detected, trigger character revolving
-
                             angle = 0;
                             // Store the colliding mountain's index for reference during revolving
                             collidingMountainIndex = getCollidingMountainIndex();
                             break;
                         }
+                    }// Check for collisions with walls
+                    if (characterXPos < 0 || characterXPos + character.width > screenX) {
+
+                        // Hit a wall (left or right)
+                        if (characterXPos < 0) {
+                            // Hit left wall
+                            hitTheWall(moveX, moveY, true);
+                        } else {
+                            // Hit right wall
+                            hitTheWall(moveX, moveY, false);
+                        }
+
+                        break;
                     }
 
                     try {
-                        Thread.sleep(20); // Adjust the sleep time for smoother animation
+                        Thread.sleep(16); // Adjust the sleep time for smoother animation
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
+//                    break;
                 }
                 isCharacterRevolve = false;
                 angle = 0;
                 isMovingCharacter = false;
             }
         }).start();
+    }
+
+    private void hitTheWall(float moveX, float moveY, boolean left) {
+
+        // Reflect character off the walls
+        tangentAngle = -tangentAngle;
+        moveX = (float) (30 * Math.cos(tangentAngle));
+        moveY = (float) (30 * Math.sin(tangentAngle));
+
+        // Move the character in a linear motion after reflection
+        while (characterYPos >= 0 && characterYPos <= canvasHeight) {
+            if (left) {
+                characterXPos -= moveX;
+                characterYPos -= moveY;
+            } else {
+                characterXPos += moveX;
+                characterYPos += moveY;
+            }
+            draw();
+
+
+            if (checkProjectileMountainCollision()) {
+                // Collision detected, trigger character revolving
+                expandLavaHeight(-15);
+                isCharacterRevolve = false;
+                angle = 0;
+                isMovingCharacter = false;
+                // Store the colliding mountain's index for reference during revolving
+                collidingMountainIndex = getCollidingMountainIndex();
+                break;
+            }
+
+            // Add collision detection logic here if needed
+            if (characterXPos < 0 || characterXPos + character.width > screenX) {
+
+                if (characterXPos < 0) {
+                    // Hit left wall
+                    hitTheWall(moveX, moveY, true);
+                } else {
+                    // Hit right wall
+                    hitTheWall(moveX, moveY, false);
+                }
+            }
+            try {
+                Thread.sleep(16); // Adjust the sleep time for smoother animation
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
 

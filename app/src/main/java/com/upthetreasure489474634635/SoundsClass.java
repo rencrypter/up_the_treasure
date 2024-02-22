@@ -10,6 +10,15 @@ public class SoundsClass {
     public static void playButtonClickSound(Context context) {
         playSound(context, R.raw.kabatsa_btn_sound);
     }
+    public static void playGameplayButtonClickSound(Context context) {
+        playSound(context, R.raw.gameplay_btn);
+    }
+    public static void playMenuButtonClickSound(Context context) {
+        playSound(context, R.raw.menu_selection);
+    }
+    public static void playNextPrevButtonClickSound(Context context) {
+        playSound(context, R.raw.knopka_btn_sound);
+    }
 //
 
 

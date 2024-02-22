@@ -60,12 +60,22 @@ public class BgMusicService extends Service implements AudioManager.OnAudioFocus
         }
         return START_STICKY;
     }
-    //    public void onStop() {
-//
-//    }
-//    public void onPause() {
-//
-//    }
+
+
+    // Pause playback when the app goes into the background
+    public static void onPause() {
+        if (mediaPlayer != null && mediaPlayer.isPlaying()) {
+            mediaPlayer.pause();
+        }
+    }
+
+    // Resume playback when the app comes into the foreground
+    public static void onResume() {
+        if (mediaPlayer != null && !mediaPlayer.isPlaying()) {
+            mediaPlayer.start();
+        }
+    }
+
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -84,7 +94,6 @@ public class BgMusicService extends Service implements AudioManager.OnAudioFocus
     }
 
 
-
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
@@ -97,7 +106,7 @@ public class BgMusicService extends Service implements AudioManager.OnAudioFocus
         switch (focusChange) {
             case AudioManager.AUDIOFOCUS_LOSS:
                 // The service lost audio focus, stop playback
-                stopSelf();
+                stopPlayback();
                 break;
             case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
                 // Temporary loss of audio focus, pause playback
@@ -111,6 +120,15 @@ public class BgMusicService extends Service implements AudioManager.OnAudioFocus
                     mediaPlayer.start();
                 }
                 break;
+        }
+    }
+
+    private void stopPlayback() {
+        // Stop playback and release resources
+        if (mediaPlayer != null && mediaPlayer.isPlaying()) {
+            mediaPlayer.stop();
+            mediaPlayer.release();
+            mediaPlayer = null;
         }
     }
 }

@@ -1,5 +1,7 @@
 package com.upthetreasure489474634635.activities;
 
+import static com.upthetreasure489474634635.SplashScreenActivity.isMyServiceRunning;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
@@ -12,6 +14,7 @@ import com.upthetreasure489474634635.SoundsClass;
 import com.upthetreasure489474634635.VibrationEffect;
 import com.upthetreasure489474634635.adapters.ImageAdapter;
 import com.upthetreasure489474634635.databinding.ActivityAchievementBinding;
+import com.upthetreasure489474634635.services.BgMusicService;
 
 public class AchievementActivity extends AppCompatActivity {
 
@@ -32,6 +35,23 @@ public class AchievementActivity extends AppCompatActivity {
             R.drawable.ic_lock_gallery
     };
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (isMyServiceRunning(BgMusicService.class, AchievementActivity.this)) {
+            BgMusicService.onPause();
+        }
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (isMyServiceRunning(BgMusicService.class, AchievementActivity.this)) {
+            BgMusicService.onResume();
+        }
+
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
