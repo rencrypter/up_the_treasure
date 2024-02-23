@@ -71,33 +71,37 @@ public class GameplayActivity extends AppCompatActivity {
                     SoundsClass.playGameplayButtonClickSound(GameplayActivity.this);
                 }
                 if (isPlayPauseBtn) {
+                    Gameview.isPlaying = false;
                     // If drawable is changed, set it back to the initial state
                     playPauseBtn.setBackgroundResource(R.drawable.ic_play_btn);
                     isPlayPauseBtn = false;
                     Gameview.isMovingCharacter = true;
+                    Gameview.isCharacterShoot = true;
+                    gameview.setClickable(false);
+                    gameview.setEnabled(false);
                     gameview.pause();
 
+
+
                 } else {
+                    Gameview.isPlaying = true;
                     // If drawable is not changed, set it to the new drawable
                     playPauseBtn.setBackgroundResource(R.drawable.ic_pause_btn);
                     isPlayPauseBtn = true;
                     Gameview.isMovingCharacter = false;
+                    Gameview.isCharacterShoot = false;
+                    gameview.setClickable(true);
+                    gameview.setEnabled(true);
                     gameview.resume();
                 }
             }
         });
-        FrameLayout.LayoutParams buttonParams = new FrameLayout.LayoutParams(
-                FrameLayout.LayoutParams.WRAP_CONTENT,
-                FrameLayout.LayoutParams.WRAP_CONTENT
-        );
+        FrameLayout.LayoutParams buttonParams = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT);
         buttonParams.gravity = Gravity.TOP | Gravity.RIGHT;
         buttonParams.width = 100; // Set desired width in pixels**
         buttonParams.height = 100;
         buttonParams.setMargins(10, 10, 10, 10);
-        FrameLayout.LayoutParams buttonParams1 = new FrameLayout.LayoutParams(
-                FrameLayout.LayoutParams.WRAP_CONTENT,
-                FrameLayout.LayoutParams.WRAP_CONTENT
-        );
+        FrameLayout.LayoutParams buttonParams1 = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT);
 
         buttonParams1.gravity = Gravity.TOP | Gravity.LEFT;
         buttonParams1.width = 100; // Set desired width in pixels**

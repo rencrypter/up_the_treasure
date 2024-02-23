@@ -45,9 +45,10 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentBottom="true"
                     android:layout_centerHorizontal="true"
-                    android:layout_marginBottom="14dp"
+                    android:layout_marginBottom="17dp"
                     android:text="0000"
-                    android:textColor="@color/white"
+                    android:fontFamily="@font/lexington_regular"
+                    android:textColor="#FFD735"
                     android:textSize="18sp" />
             </RelativeLayout>
 

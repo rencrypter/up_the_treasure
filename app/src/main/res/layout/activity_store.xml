@@ -31,7 +31,8 @@
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
                 android:text="0000"
-                android:textColor="@color/white"
+                android:textColor="#FFD735"
+                android:fontFamily="@font/lexington_regular"
                 android:textSize="18sp" />
         </RelativeLayout>
     </RelativeLayout>

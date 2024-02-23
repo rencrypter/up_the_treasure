@@ -60,6 +60,7 @@ public class GameOverActivity extends AppCompatActivity {
 //                if(Ref.isVibrateEnabled){
 //                    VibrationEffect.VibrationEffect(GameOverActivity.this);
 //                }
+                coins = 0;
                 startActivity(new Intent(GameOverActivity.this, GameplayActivity.class));
                 finish();
             }

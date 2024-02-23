@@ -19,6 +19,8 @@ import android.view.SurfaceView;
 import android.widget.Button;
 import android.widget.Toast;
 
+import androidx.core.content.res.ResourcesCompat;
+
 import com.upthetreasure489474634635.R;
 import com.upthetreasure489474634635.Ref;
 import com.upthetreasure489474634635.VibrationEffect;
@@ -87,6 +89,11 @@ public class Gameview extends SurfaceView implements Runnable {
 
     public static int coins = 0;
 
+    private boolean isTapDown = false;
+
+    private boolean isExpandLavaScheduled = false;
+
+    private Handler handler1 = new Handler();
 
     public Gameview(Context context, int ScreenX, int ScreenY) {
         super(context);
@@ -128,9 +135,11 @@ public class Gameview extends SurfaceView implements Runnable {
         coinDrawable = BitmapFactory.decodeResource(getResources(), R.drawable.coin);
 
 
-        scorePaint.setColor(Color.WHITE);
+        scorePaint.setColor(Color.parseColor("#FFD735")); // Set color using hex code
+// Set font
+        Typeface typeface = ResourcesCompat.getFont(getContext(), R.font.lexington_regular); // Assuming R.font.lexington_regular is a valid font resource
+        scorePaint.setTypeface(typeface);
         scorePaint.setTextSize(32);
-        scorePaint.setTypeface(Typeface.DEFAULT_BOLD);
         scorePaint.setTextAlign(Paint.Align.CENTER);
         scorePaint.setAntiAlias(true);
 
@@ -175,7 +184,7 @@ public class Gameview extends SurfaceView implements Runnable {
 
             if (coinss[0] == null) {
                 for (int i = 0; i < coinss.length; i++) {
-                    coinss[i] = new Coin(getResources(),(int) Math.floor(Math.random() * (maxmanY - minmanY) + minmanY), 0);
+                    coinss[i] = new Coin(getResources(), (int) Math.floor(Math.random() * (maxmanY - minmanY) + minmanY), 0);
                 }
             }
 
@@ -565,24 +574,38 @@ public class Gameview extends SurfaceView implements Runnable {
     @Override
     public boolean onTouchEvent(MotionEvent event) {
 
-        // Handle outside taps here
-        if (!isMovingCharacter) {
-            expandLavaHeight(15);
-            isCharacterRevolve = true;
-            isMovingCharacter = true;
-            Ref.countForAchiev++;
-            moveCharacTowardsTangent(event.getX(), event.getY());
-            // Limit lava height to canvas height
+        if (isPlaying) {
+            // Handle outside taps here
+            if (!isMovingCharacter) {
 
-            angle = 0;
+                if (!isExpandLavaScheduled) {
+                    handler1.postDelayed(expandLavaRunnable, 1000); // 1000 milliseconds = 1 second
+                    isExpandLavaScheduled = true;
+                }
+                isCharacterRevolve = true;
+                isMovingCharacter = true;
+                Ref.countForAchiev++;
+                moveCharacTowardsTangent(event.getX(), event.getY());
+                // Limit lava height to canvas height
 
-            // Return true to consume the event
-            return true;
+                angle = 0;
+
+                // Return true to consume the event
+                return true;
+            }
         }
 
         // Return false for unhandled events
         return false;
     }
+
+    private Runnable expandLavaRunnable = new Runnable() {
+        @Override
+        public void run() {
+            expandLavaHeight(12); // Or pass the desired expansionValue
+            isExpandLavaScheduled = false;
+        }
+    };
 
     private void expandLavaHeight(int expansionValue) {
         // Set boundaries for lava height
@@ -615,40 +638,46 @@ public class Gameview extends SurfaceView implements Runnable {
                 float moveY = (float) (speed * Math.sin(tangentAngle));
 
                 while (characterXPos > 0 && characterXPos < screenX && characterYPos > 0 && characterYPos < screenY) {
-                    characterXPos += moveX;
-                    characterYPos += moveY;
-                    draw();
+                    if (!isCharacterShoot) {
+                        characterXPos += moveX;
+                        characterYPos += moveY;
+                        draw();
 
-                    if (getCollidingMountainIndex() != collidingMountainIndex) {
-                        if (checkProjectileMountainCollision()) {
-                            expandLavaHeight(-15);
-                            // Collision detected, trigger character revolving
-                            angle = 0;
-                            // Store the colliding mountain's index for reference during revolving
-                            collidingMountainIndex = getCollidingMountainIndex();
+                        if (getCollidingMountainIndex() != collidingMountainIndex) {
+                            if (checkProjectileMountainCollision()) {
+                                expandLavaHeight(-15);
+                                // Collision detected, trigger character revolving
+                                angle = 0;
+                                // Store the colliding mountain's index for reference during revolving
+                                collidingMountainIndex = getCollidingMountainIndex();
+                                break;
+                            }
+                        }// Check for collisions with walls
+                        if (characterXPos < 0 || characterXPos + character.width > screenX) {
+
+
+                            // Hit a wall (left or right)
+                            if (characterXPos < 0) {
+//                                isCharacterShoot = true;
+                                // Hit left wall
+                                hitTheWall(moveX, moveY, true);
+                            } else {
+//                                isCharacterShoot = true;
+                                // Hit right wall
+                                hitTheWall(moveX, moveY, false);
+                            }
+
+
                             break;
                         }
-                    }// Check for collisions with walls
-                    if (characterXPos < 0 || characterXPos + character.width > screenX) {
 
-                        // Hit a wall (left or right)
-                        if (characterXPos < 0) {
-                            // Hit left wall
-                            hitTheWall(moveX, moveY, true);
-                        } else {
-                            // Hit right wall
-                            hitTheWall(moveX, moveY, false);
+                        try {
+                            Thread.sleep(16); // Adjust the sleep time for smoother animation
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
                         }
-
-                        break;
-                    }
-
-                    try {
-                        Thread.sleep(16); // Adjust the sleep time for smoother animation
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
 //                    break;
+                    }
                 }
                 isCharacterRevolve = false;
                 angle = 0;
@@ -666,42 +695,47 @@ public class Gameview extends SurfaceView implements Runnable {
 
         // Move the character in a linear motion after reflection
         while (characterYPos >= 0 && characterYPos <= canvasHeight) {
-            if (left) {
-                characterXPos -= moveX;
-                characterYPos -= moveY;
-            } else {
-                characterXPos += moveX;
-                characterYPos += moveY;
-            }
-            draw();
-
-
-            if (checkProjectileMountainCollision()) {
-                // Collision detected, trigger character revolving
-                expandLavaHeight(-15);
-                isCharacterRevolve = false;
-                angle = 0;
-                isMovingCharacter = false;
-                // Store the colliding mountain's index for reference during revolving
-                collidingMountainIndex = getCollidingMountainIndex();
-                break;
-            }
-
-            // Add collision detection logic here if needed
-            if (characterXPos < 0 || characterXPos + character.width > screenX) {
-
-                if (characterXPos < 0) {
-                    // Hit left wall
-                    hitTheWall(moveX, moveY, true);
+            if (!isCharacterShoot) {
+                if (left) {
+                    characterXPos -= moveX;
+                    characterYPos -= moveY;
                 } else {
-                    // Hit right wall
-                    hitTheWall(moveX, moveY, false);
+                    characterXPos += moveX;
+                    characterYPos += moveY;
                 }
-            }
-            try {
-                Thread.sleep(16); // Adjust the sleep time for smoother animation
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+                draw();
+
+
+                if (checkProjectileMountainCollision()) {
+                    // Collision detected, trigger character revolving
+                    expandLavaHeight(-15);
+                    isCharacterRevolve = false;
+                    angle = 0;
+                    isMovingCharacter = false;
+                    // Store the colliding mountain's index for reference during revolving
+                    collidingMountainIndex = getCollidingMountainIndex();
+                    break;
+                }
+
+                // Add collision detection logic here if needed
+                if (characterXPos < 0 || characterXPos + character.width > screenX) {
+
+
+                    if (characterXPos < 0) {
+                        // Hit left wall
+                        hitTheWall(moveX, moveY, true);
+                    } else {
+                        // Hit right wall
+                        hitTheWall(moveX, moveY, false);
+                    }
+
+                }
+                try {
+                    Thread.sleep(16); // Adjust the sleep time for smoother animation
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
             }
         }
     }

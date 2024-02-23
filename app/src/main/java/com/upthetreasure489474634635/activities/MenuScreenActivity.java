@@ -16,6 +16,7 @@ import com.upthetreasure489474634635.R;
 import com.upthetreasure489474634635.Ref;
 import com.upthetreasure489474634635.SoundsClass;
 import com.upthetreasure489474634635.VibrationEffect;
+import com.upthetreasure489474634635.assets.Gameview;
 import com.upthetreasure489474634635.databinding.ActivityMenuScreenBinding;
 import com.upthetreasure489474634635.services.BgMusicService;
 
@@ -67,6 +68,9 @@ public class MenuScreenActivity extends AppCompatActivity {
                     SoundsClass.playMenuButtonClickSound(MenuScreenActivity.this);
                 }
 
+                Gameview.isMovingCharacter = false;
+                Gameview.isCharacterShoot = false;
+                Gameview.coins = 0;
                 startActivity(new Intent(MenuScreenActivity.this, GameplayActivity.class));
                 finish();
             }
